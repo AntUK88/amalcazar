@@ -9,22 +9,22 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root { --cream: #f7f3ec; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
-    html, body { background: var(--cream); color: var(--ink); font-family: 'EB Garamond', Georgia, serif; min-height: 100vh; }
 
-    .page {
+    html, body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
       min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto 1fr auto;
     }
 
     header {
-      grid-column: 1 / -1;
+      position: relative;
+      z-index: 10;
       padding: 1.25rem 2.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--rule);
+      background: transparent;
     }
 
     .site-name {
@@ -47,47 +47,81 @@
     }
     nav a:hover { color: var(--ink); }
 
-    .col-photo {
-      border-right: 1px solid var(--rule);
-      overflow: hidden;
+    /* Hero: photo bleeds into background */
+    .hero {
       position: relative;
-      margin-top: 0;
+      min-height: calc(100vh - 60px);
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 5vh;
     }
 
-    .col-photo img {
-      width: 100%;
+    .hero-photo {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-photo img {
+      width: 55%;
       height: 100%;
       object-fit: cover;
       object-position: center top;
       display: block;
       filter: grayscale(100%);
-      opacity: 0.92;
     }
 
-    .col-text {
-      padding: 3.5rem 3rem 3rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      gap: 1.75rem;
+    /* Fade photo into cream on the right */
+    .hero-photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        transparent 30%,
+        var(--cream) 65%
+      );
+    }
+
+    /* Fade photo into cream at the bottom */
+    .hero-photo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        transparent 60%,
+        var(--cream) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      margin-left: 48%;
+      padding-right: 6vw;
+      max-width: 520px;
     }
 
     .name {
       font-family: 'EB Garamond', Georgia, serif;
       font-weight: 400;
-      font-size: clamp(1.6rem, 2.8vw, 2.6rem);
-      line-height: 1.15;
+      font-size: clamp(1.8rem, 2.8vw, 3rem);
+      line-height: 1.1;
       letter-spacing: -0.01em;
       white-space: nowrap;
+      margin-bottom: 1.25rem;
     }
 
-    .rule { width: 2.5rem; height: 1px; background: var(--ink); }
+    .rule { width: 2.5rem; height: 1px; background: var(--ink); margin-bottom: 1.5rem; }
 
     .bio {
       font-size: 1rem;
       line-height: 1.75;
       color: var(--ink);
       max-width: 36ch;
+      margin-bottom: 2rem;
     }
 
     .links { display: flex; flex-direction: column; gap: 0.55rem; }
@@ -115,7 +149,6 @@
     .links a:hover::before { width: 2rem; }
 
     footer {
-      grid-column: 1 / -1;
       padding: 1rem 2.5rem;
       border-top: 1px solid var(--rule);
       display: flex;
@@ -132,40 +165,46 @@
     footer a:hover { color: var(--ink); }
 
     @media (max-width: 680px) {
-      .page { grid-template-columns: 1fr; }
       header { padding: 1rem 1.5rem; }
-      .col-photo { border-right: none; border-bottom: 1px solid var(--rule); height: 60vw; }
-      .col-text { padding: 2rem 1.5rem; }
-      .name { white-space: normal; font-size: 2.2rem; }
       nav { gap: 1.25rem; }
+
+      .hero { min-height: auto; flex-direction: column; align-items: flex-start; padding-bottom: 0; }
+
+      .hero-photo { position: relative; width: 100%; height: 70vw; }
+      .hero-photo img { width: 100%; }
+      .hero-photo::after { background: linear-gradient(to bottom, transparent 50%, var(--cream) 100%); }
+      .hero-photo::before { display: none; }
+
+      .hero-content { margin-left: 0; padding: 1.5rem 1.5rem 2.5rem; max-width: 100%; }
+      .name { white-space: normal; font-size: 2rem; }
+
       footer { padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
     }
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .col-text > * { animation: fadeUp 0.55s ease both; }
-    .col-text > *:nth-child(1) { animation-delay: 0.08s; }
-    .col-text > *:nth-child(2) { animation-delay: 0.18s; }
-    .col-text > *:nth-child(3) { animation-delay: 0.28s; }
-    .col-text > *:nth-child(4) { animation-delay: 0.4s; }
-    .col-text > *:nth-child(5) { animation-delay: 0.52s; }
+    .hero-content > * { animation: fadeUp 0.6s ease both; }
+    .hero-content > *:nth-child(1) { animation-delay: 0.1s; }
+    .hero-content > *:nth-child(2) { animation-delay: 0.2s; }
+    .hero-content > *:nth-child(3) { animation-delay: 0.3s; }
+    .hero-content > *:nth-child(4) { animation-delay: 0.45s; }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header>
-      <a href="/" class="site-name">A. M. Alcazar</a>
-      <nav>
-        <a href="https://moviemarginalia.com">Writing</a>
-        <a href="https://moviemarginalia.com/photography/">Photography</a>
-        <a href="mailto:hello@moviemarginalia.com">Contact</a>
-      </nav>
-    </header>
 
-    <div class="col-photo">
+  <header>
+    <a href="/" class="site-name">A. M. Alcazar</a>
+    <nav>
+      <a href="https://moviemarginalia.com">Writing</a>
+      <a href="https://moviemarginalia.com/photography/">Photography</a>
+      <a href="mailto:hello@moviemarginalia.com">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="hero-photo">
       <img src="photo.jpg" alt="A. M. Alcazar">
     </div>
-
-    <div class="col-text">
+    <div class="hero-content">
       <h1 class="name">Antonio Miguel Alcazar</h1>
       <div class="rule"></div>
       <p class="bio">Placeholder bio — one or two sentences about who you are and what you care about. Something that tells the right person they're in the right place.</p>
@@ -176,11 +215,12 @@
         <a href="mailto:hello@moviemarginalia.com">hello@moviemarginalia.com</a>
       </div>
     </div>
-
-    <footer>
-      <span>© A. M. Alcazar</span>
-      <a href="mailto:hello@moviemarginalia.com">hello@moviemarginalia.com</a>
-    </footer>
   </div>
+
+  <footer>
+    <span>© A. M. Alcazar</span>
+    <a href="mailto:hello@moviemarginalia.com">hello@moviemarginalia.com</a>
+  </footer>
+
 </body>
 </html>
