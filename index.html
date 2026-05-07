@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --cream: #f7f3ec; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
+    :root { --cream: #f3f3f3; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
 
     html, body {
       background: var(--cream);
@@ -54,7 +54,6 @@
     }
     nav a:hover { color: var(--ink); }
 
-    /* Photo column — no border, fade handled by overlay */
     .col-photo {
       overflow: hidden;
       position: relative;
@@ -67,30 +66,6 @@
       object-position: center top;
       display: block;
       filter: grayscale(100%);
-      position: relative;
-      z-index: 0;
-    }
-
-    /* Fade right edge of photo into cream */
-    .col-photo::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 1;
-      background: linear-gradient(to right, transparent 55%, var(--cream) 95%);
-      pointer-events: none;
-    }
-    /* Fade top, bottom and left edges */
-    .col-photo::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 2;
-      background:
-        linear-gradient(to bottom, var(--cream) 0%, transparent 8%),
-        linear-gradient(to top, var(--cream) 0%, transparent 12%),
-        linear-gradient(to right, var(--cream) 0%, transparent 8%);
-      pointer-events: none;
     }
 
     /* Text column */
