@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CV — A. M. Alcazar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #f3f3f3; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 0 3rem;
+      height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .site-name {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    nav { display: flex; gap: 2rem; }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--ink); }
+    nav a.active { color: var(--ink); }
+
+    .cv-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    /* Profile */
+    .cv-profile {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 3.5rem;
+      max-width: 56ch;
+    }
+
+    /* Sections */
+    .cv-section {
+      margin-bottom: 3rem;
+    }
+
+    .cv-section-title {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* Experience entries */
+    .cv-entry {
+      margin-bottom: 1.75rem;
+    }
+
+    .cv-entry-title {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+    }
+
+    .cv-entry-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+
+    .cv-entry-body {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--ink);
+    }
+
+    /* Skills */
+    .cv-skills {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .cv-skill-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .cv-skill-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-top: 0.1rem;
+    }
+
+    /* Download */
+    .cv-download {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cv-download a {
+      font-size: 0.8rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .cv-download a::before {
+      content: '';
+      display: inline-block;
+      width: 1.2rem;
+      height: 1px;
+      background: currentColor;
+      transition: width 0.25s;
+    }
+
+    .cv-download a:hover { color: var(--ink); }
+    .cv-download a:hover::before { width: 2rem; }
+
+    footer {
+      padding: 1rem 3rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer span, footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--ink); }
+
+    @media (max-width: 680px) {
+      header { padding: 0 1.5rem; }
+      nav { gap: 1.25rem; }
+      nav a { font-size: 0.68rem; }
+      .cv-wrap { padding: 2.5rem 1.5rem 4rem; }
+      .cv-skill-row { grid-template-columns: 1fr; gap: 0.2rem; }
+      .cv-skill-label { margin-bottom: 0.1rem; }
+      footer { padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="site-name">A. M. Alcazar</a>
+    <nav>
+      <a href="https://moviemarginalia.com">Writing</a>
+      <a href="https://moviemarginalia.com/photography/">Photography</a>
+      <a href="/cv.html" class="active">CV</a>
+      <a href="mailto:hello@amalcazar.com">Contact</a>
+    </nav>
+  </header>
+
+  <div class="cv-wrap">
+
+    <div class="cv-profile">
+      Bilingual English–Spanish administrator with a postgraduate background in arts management and a decade of progressively responsible operational experience. Comfortable working independently within structured workflows, managing competing priorities to deadline, and producing accurate, reliable output with minimal supervision. Looking to move into a full-time office-based administrative or coordination role.
+    </div>
+
+    <div class="cv-section">
+      <p class="cv-section-title">Experience</p>
+
+      <div class="cv-entry">
+        <div class="cv-entry-title">Administrative Assistant — Morris Hargreaves McIntyre</div>
+        <div class="cv-entry-body">Provided administrative support to the finance and research teams within a cultural consultancy. Processed data, managed expense records, and supported HR reporting on staff rotas, holidays, and attendance. Administered the Synergist project management system and contributed to a software transition. Undertook quality assurance on social research surveys — coding and validating data, preparing stimulus materials for qualitative focus groups serving major arts and cultural clients.</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-entry-title">Research Assistant — Royal Exchange Theatre</div>
+        <div class="cv-entry-sub">Placement</div>
+        <div class="cv-entry-body">Analysed audience feedback from over 2,000 attendees and co-authored findings that contributed to a multi-organisation cultural manifesto. Supported campaign planning with audience insight data and produced stakeholder reporting for business development purposes.</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-entry-title">Marketing Team Manager — University of Manchester</div>
+        <div class="cv-entry-sub">Placement</div>
+        <div class="cv-entry-body">Developed a social media and event communications strategy for a university arts and culture initiative. Coordinated collaborative content with Z-Arts and the Manchester Refugee Network; designed and distributed audiovisual materials and managed scheduling across multiple platforms.</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-entry-title">Operational and supervisory roles</div>
+        <div class="cv-entry-body">A decade of progressively responsible roles in retail and hospitality, including team leadership, shift planning, staff training and performance management, stock reporting, cash handling, and compliance. Consistent record of working accurately under pressure with minimal supervision across high-volume, deadline-driven environments.</div>
+      </div>
+
+    </div>
+
+    <div class="cv-section">
+      <p class="cv-section-title">Education</p>
+
+      <div class="cv-entry">
+        <div class="cv-entry-title">MA Arts Management — University of Manchester</div>
+        <div class="cv-entry-body">Business Strategy, Cultural Policy, Management Principles. Dissertation on dialect and theatre marketing. Placements at Royal Exchange Theatre, University of Manchester, and Z-Arts, with a focus on Audience Development and Research.</div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-entry-title">BA English (Linguistics and Literature) — Universidad de Alcalá, Madrid</div>
+        <div class="cv-entry-body">Communication Strategies, Discourse Analysis, English Drama.</div>
+      </div>
+
+    </div>
+
+    <div class="cv-section">
+      <p class="cv-section-title">Skills</p>
+      <div class="cv-skills">
+        <div class="cv-skill-row">
+          <span class="cv-skill-label">Administrative</span>
+          <span>Data entry and validation, inbox and calendar management, HR and attendance reporting, expense processing, document management.</span>
+        </div>
+        <div class="cv-skill-row">
+          <span class="cv-skill-label">Systems</span>
+          <span>Synergist, Microsoft Office (Word, Excel, Outlook), standard back-of-house stock and logistics systems.</span>
+        </div>
+        <div class="cv-skill-row">
+          <span class="cv-skill-label">Research</span>
+          <span>Quantitative and qualitative data handling, survey QA and coding, audience research, stakeholder reporting.</span>
+        </div>
+        <div class="cv-skill-row">
+          <span class="cv-skill-label">Languages</span>
+          <span>English (professional proficiency), Spanish (native).</span>
+        </div>
+        <div class="cv-skill-row">
+          <span class="cv-skill-label">Additional</span>
+          <span>CACHE Level 3 Teaching Assistant Certification. Volunteer, Manchester Literature Festival. Member, Whitworth Young Contemporaries.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cv-download">
+      <a href="/Antonio_Alcazar_CV_2026.pdf" download>Download full CV (PDF)</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>© A. M. Alcazar</span>
+    <a href="mailto:hello@amalcazar.com">hello@amalcazar.com</a>
+  </footer>
+
+</body>
+</html>
