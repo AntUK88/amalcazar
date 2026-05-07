@@ -5,46 +5,148 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>A. M. Alcazar</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root { --cream: #f7f3ec; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
     html, body { background: var(--cream); color: var(--ink); font-family: 'EB Garamond', Georgia, serif; min-height: 100vh; }
-    .page { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; }
-    header { grid-column: 1 / -1; padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--rule); }
-    .site-name { font-family: 'Cormorant', Georgia, serif; font-weight: 300; font-size: 1.1rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); text-decoration: none; }
-    nav { display: flex; gap: 2rem; list-style: none; }
-    nav a { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    header {
+      grid-column: 1 / -1;
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .site-name {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    nav { display: flex; gap: 2rem; }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
     nav a:hover { color: var(--ink); }
-    .col-photo { border-right: 1px solid var(--rule); overflow: hidden; position: relative; min-height: 70vh; }
-    .col-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; filter: grayscale(100%); opacity: 0.92; }
-    .col-text { padding: 4rem 3.5rem; display: flex; flex-direction: column; justify-content: center; gap: 2rem; }
-    .name { font-family: 'Cormorant', Georgia, serif; font-weight: 300; font-size: clamp(2.8rem, 5vw, 4.5rem); line-height: 1.05; letter-spacing: -0.01em; }
+
+    .col-photo {
+      border-right: 1px solid var(--rule);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .col-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      display: block;
+      filter: grayscale(100%);
+      opacity: 0.92;
+    }
+
+    .col-text {
+      padding: 3rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.75rem;
+    }
+
+    .name {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
     .rule { width: 2.5rem; height: 1px; background: var(--ink); }
-    .bio { font-size: 1.05rem; line-height: 1.75; color: var(--ink); max-width: 38ch; }
-    .links { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem; }
-    .links a { font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
-    .links a::before { content: ''; display: inline-block; width: 1.2rem; height: 1px; background: currentColor; flex-shrink: 0; transition: width 0.25s; }
+
+    .bio {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--ink);
+      max-width: 36ch;
+    }
+
+    .links { display: flex; flex-direction: column; gap: 0.55rem; }
+    .links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+    .links a::before {
+      content: '';
+      display: inline-block;
+      width: 1.2rem;
+      height: 1px;
+      background: currentColor;
+      flex-shrink: 0;
+      transition: width 0.25s;
+    }
     .links a:hover { color: var(--ink); }
     .links a:hover::before { width: 2rem; }
-    footer { grid-column: 1 / -1; padding: 1.25rem 3rem; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; }
-    footer span, footer a { font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; text-decoration: none; }
+
+    footer {
+      grid-column: 1 / -1;
+      padding: 1rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer span, footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
     footer a:hover { color: var(--ink); }
+
     @media (max-width: 680px) {
       .page { grid-template-columns: 1fr; }
-      header { padding: 1.25rem 1.5rem; }
-      .col-photo { border-right: none; border-bottom: 1px solid var(--rule); min-height: 55vw; max-height: 70vw; }
-      .col-text { padding: 2.5rem 1.5rem; }
+      header { padding: 1rem 1.5rem; }
+      .col-photo { border-right: none; border-bottom: 1px solid var(--rule); height: 60vw; }
+      .col-text { padding: 2rem 1.5rem; }
+      .name { white-space: normal; font-size: 2.2rem; }
       nav { gap: 1.25rem; }
       footer { padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
     }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .col-text > * { animation: fadeUp 0.6s ease both; }
-    .col-text > *:nth-child(1) { animation-delay: 0.1s; }
-    .col-text > *:nth-child(2) { animation-delay: 0.2s; }
-    .col-text > *:nth-child(3) { animation-delay: 0.3s; }
-    .col-text > *:nth-child(4) { animation-delay: 0.45s; }
-    .col-text > *:nth-child(5) { animation-delay: 0.6s; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .col-text > * { animation: fadeUp 0.55s ease both; }
+    .col-text > *:nth-child(1) { animation-delay: 0.08s; }
+    .col-text > *:nth-child(2) { animation-delay: 0.18s; }
+    .col-text > *:nth-child(3) { animation-delay: 0.28s; }
+    .col-text > *:nth-child(4) { animation-delay: 0.4s; }
+    .col-text > *:nth-child(5) { animation-delay: 0.52s; }
   </style>
 </head>
 <body>
@@ -57,11 +159,13 @@
         <a href="mailto:hello@moviemarginalia.com">Contact</a>
       </nav>
     </header>
+
     <div class="col-photo">
       <img src="photo.jpg" alt="A. M. Alcazar">
     </div>
+
     <div class="col-text">
-      <h1 class="name">Antonio<br>Miguel<br>Alcazar</h1>
+      <h1 class="name">Antonio Miguel Alcazar</h1>
       <div class="rule"></div>
       <p class="bio">Placeholder bio — one or two sentences about who you are and what you care about. Something that tells the right person they're in the right place.</p>
       <div class="links">
@@ -71,6 +175,7 @@
         <a href="mailto:hello@moviemarginalia.com">hello@moviemarginalia.com</a>
       </div>
     </div>
+
     <footer>
       <span>© A. M. Alcazar</span>
       <a href="mailto:hello@moviemarginalia.com">hello@moviemarginalia.com</a>
