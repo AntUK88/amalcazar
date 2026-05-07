@@ -1,0 +1,9 @@
+{
+  "photos": [
+    {
+      "file": "example.jpg",
+      "description": "Optional description here",
+      "notes": "Camera · Film stock · Location"
+    }
+  ]
+}
