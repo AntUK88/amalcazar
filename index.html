@@ -26,7 +26,8 @@
 
     header {
       grid-column: 1 / -1;
-      padding: 1.25rem 2.5rem;
+      padding: 0 2.5rem;
+      height: 56px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -70,23 +71,25 @@
       z-index: 0;
     }
 
-    /* Fade right edge, top and bottom of photo into cream */
+    /* Fade right edge of photo into cream */
     .col-photo::after {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background:
-        linear-gradient(to right, transparent 55%, var(--cream) 95%);
+      z-index: 1;
+      background: linear-gradient(to right, transparent 55%, var(--cream) 95%);
       pointer-events: none;
     }
+    /* Fade top, bottom and left edges */
     .col-photo::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 1;
+      z-index: 2;
       background:
-        linear-gradient(to bottom, var(--cream) 0%, transparent 5%),
-        linear-gradient(to top, var(--cream) 0%, transparent 10%);
+        linear-gradient(to bottom, var(--cream) 0%, transparent 8%),
+        linear-gradient(to top, var(--cream) 0%, transparent 12%),
+        linear-gradient(to right, var(--cream) 0%, transparent 8%);
       pointer-events: none;
     }
 
