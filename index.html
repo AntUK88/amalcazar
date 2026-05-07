@@ -200,14 +200,19 @@
     .col-text > *:nth-child(2) { animation-delay: 0.18s; }
     .col-text > *:nth-child(3) { animation-delay: 0.28s; }
     .col-text > *:nth-child(4) { animation-delay: 0.4s; }
-  </style>
+      .nav-item { position: relative; }
+    .nav-dropdown { display: none; position: absolute; top: calc(100% + 0.75rem); left: 50%; transform: translateX(-50%); background: #f3f3f3; border: 1px solid var(--rule); min-width: 160px; z-index: 200; padding: 0.5rem 0; }
+    .nav-dropdown a { display: block; padding: 0.45rem 1rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-decoration: none; white-space: nowrap; transition: color 0.2s; }
+    .nav-dropdown a:hover { color: var(--ink); }
+    .nav-item:hover .nav-dropdown { display: block; }
+</style>
 </head>
 <body>
   <div class="page">
     <header>
       <a href="/" class="site-name">A. M. Alcazar</a>
       <nav>
-        <a href="https://moviemarginalia.com">Writing</a>
+        <div class="nav-item"><a href="https://moviemarginalia.com">Writing</a><div class="nav-dropdown"><a href="https://moviemarginalia.substack.com" target="_blank">Movie Marginalia</a><a href="https://moviemarginalia.com/selected/">Selected Reviews</a></div></div>
         <a href="/photography.html">Photography</a>
         <a href="/cv.html">CV</a>
         <a href="mailto:hello@amalcazar.com">Contact</a>
@@ -221,16 +226,16 @@
     <div class="col-text">
       <h1 class="name">Antonio Miguel Alcazar</h1>
       <div class="rule"></div>
-      <p class="bio">Film critic. Screen and short story writer. His long-form pieces can be found at Movie Marginalia. Brief reviews on Letterboxd.</p>
+      <p class="bio">Film critic. Screen and short story writer.</p>
       <div class="links">
-        <a href="https://moviemarginalia.com">Movie Marginalia</a>
-        <a href="https://moviemarginalia.com/selected/">Selected Writing</a>
-        <a href="https://moviemarginalia.com/photography/">Photography</a>
+        <a href="https://moviemarginalia.com">Movie Marginalia, notes on the experience of cinema.</a>
+        <a href="https://moviemarginalia.com/selected/">For a selection of his best reviews, click here.</a>
       </div>
     </div>
 
     <footer>
-      <span>© A. M. Alcazar, 2026</span>
+      <span>© A. M. Alcazar</span>
+      <a href="mailto:hello@moviemarginalia.com">hello@moviemarginalia.com</a>
     </footer>
   </div>
 </body>

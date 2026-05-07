@@ -148,14 +148,19 @@
       .lightbox-next { right: 0; }
       footer { padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
     }
-  </style>
+      .nav-item { position: relative; }
+    .nav-dropdown { display: none; position: absolute; top: calc(100% + 0.75rem); left: 50%; transform: translateX(-50%); background: #f3f3f3; border: 1px solid var(--rule); min-width: 160px; z-index: 200; padding: 0.5rem 0; }
+    .nav-dropdown a { display: block; padding: 0.45rem 1rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-decoration: none; white-space: nowrap; transition: color 0.2s; }
+    .nav-dropdown a:hover { color: var(--ink); }
+    .nav-item:hover .nav-dropdown { display: block; }
+</style>
 </head>
 <body>
 
   <header>
     <a href="/" class="site-name">A. M. Alcazar</a>
     <nav>
-      <a href="https://moviemarginalia.com">Writing</a>
+      <div class="nav-item"><a href="https://moviemarginalia.com">Writing</a><div class="nav-dropdown"><a href="https://moviemarginalia.substack.com" target="_blank">Movie Marginalia</a><a href="https://moviemarginalia.com/selected/">Selected Reviews</a></div></div>
       <a href="/photography.html" class="active">Photography</a>
       <a href="/cv.html">CV</a>
       <a href="mailto:hello@amalcazar.com">Contact</a>
