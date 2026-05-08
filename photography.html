@@ -24,7 +24,8 @@
     nav a { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
     nav a:hover, nav a.active { color: var(--ink); }
 
-    .photo-wrap { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+    .photo-wrap { padding: 2rem 1rem 4rem; }
+    .photo-footnote { margin-top: 2.5rem; font-size: 0.7rem; letter-spacing: 0.05em; color: var(--muted); font-style: italic; text-align: center; }
 
     .photo-grid {
       columns: 3 240px;
@@ -141,7 +142,7 @@
       header { padding: 0 1.25rem; }
       nav { gap: 1rem; }
       nav a { font-size: 0.68rem; }
-      .photo-wrap { padding: 2rem 1rem 4rem; }
+      .photo-wrap { padding: 1.5rem 0.5rem 3rem; }
       .photo-grid { columns: 2 140px; }
       .lightbox { padding: 1rem; }
       .lightbox-prev { left: 0; }
@@ -171,6 +172,7 @@
   <div class="photo-wrap">
     <div class="photo-grid" id="photo-grid"></div>
     <div class="empty-state" id="empty-state" style="display:none;">No photos yet.</div>
+    <p class="photo-footnote">Digital pictures taken on iPhone 15 Pro. Scans from Olympus OM-10.</p>
   </div>
 
   <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
