@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A. M. Alcazar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --cream: #fff7ed; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
+
+    html, body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 45vw 1fr;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    header {
+      grid-column: 1 / -1;
+      padding: 0 2.5rem;
+      height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .site-name {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    nav { display: flex; gap: 2rem; }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--ink); }
+
+    .col-photo {
+      overflow: hidden;
+      position: relative;
+      height: calc(100vh - 56px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 2rem;
+    }
+
+    .col-photo img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      object-position: center top;
+      display: block;
+      filter: grayscale(100%) sepia(15%);
+      -webkit-mask-image: 
+        linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 4%, rgba(0,0,0,0.7) 8%, black 13%, black 87%, rgba(0,0,0,0.7) 92%, rgba(0,0,0,0.3) 96%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 2%, rgba(0,0,0,0.7) 5%, black 9%, black 91%, rgba(0,0,0,0.7) 95%, rgba(0,0,0,0.3) 98%, transparent 100%);
+      -webkit-mask-composite: source-in;
+      mask-image: 
+        linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 4%, rgba(0,0,0,0.7) 8%, black 13%, black 87%, rgba(0,0,0,0.7) 92%, rgba(0,0,0,0.3) 96%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 2%, rgba(0,0,0,0.7) 5%, black 9%, black 91%, rgba(0,0,0,0.7) 95%, rgba(0,0,0,0.3) 98%, transparent 100%);
+      mask-composite: intersect;
+    }
+
+    .col-text {
+      padding: 2.5rem 3rem 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 1.5rem;
+    }
+
+    .name {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.6rem, 2.6vw, 2.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .rule { width: 2.5rem; height: 1px; background: var(--ink); }
+
+    .bio {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--ink);
+      max-width: 36ch;
+    }
+
+    .links { display: flex; flex-direction: column; gap: 0.55rem; }
+    .links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+    .links a::before {
+      content: '';
+      display: inline-block;
+      width: 1.2rem;
+      height: 1px;
+      background: currentColor;
+      flex-shrink: 0;
+      transition: width 0.25s;
+    }
+    .links a:hover { color: var(--ink); }
+    .links a:hover::before { width: 2rem; }
+
+    footer {
+      grid-column: 1 / -1;
+      padding: 1rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer span, footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--ink); }
+
+    @media (max-width: 680px) {
+      .page { grid-template-columns: 1fr; }
+      header { padding: 0 1.25rem; height: auto; min-height: 52px; flex-wrap: nowrap; gap: 1rem; }
+      .site-name { font-size: 0.95rem; white-space: nowrap; }
+      nav { gap: 1rem; }
+      nav a { font-size: 0.68rem; }
+      .col-photo { height: 70vw; max-height: 320px; padding-top: 0; }
+      .col-photo img { height: 100%; width: auto; max-width: 100%; margin: 0 auto; }
+      .col-text { padding: 2rem 1.5rem 2.5rem; }
+      .name { font-size: 1.9rem; white-space: normal; }
+      footer { padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
+    }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .col-text > * { animation: fadeUp 0.55s ease both; }
+    .col-text > *:nth-child(1) { animation-delay: 0.08s; }
+    .col-text > *:nth-child(2) { animation-delay: 0.18s; }
+    .col-text > *:nth-child(3) { animation-delay: 0.28s; }
+    .col-text > *:nth-child(4) { animation-delay: 0.4s; }
+
+    .nav-item { position: relative; display: flex; align-items: center; }
+    .nav-item > a { display: flex; align-items: center; }
+    .nav-dropdown { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: #fff7ed; border: 1px solid var(--rule); min-width: 160px; z-index: 200; padding: 0.5rem 0; padding-top: 0.75rem; margin-top: 0; }
+    .nav-dropdown a { display: block; padding: 0.45rem 1rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-decoration: none; white-space: nowrap; transition: color 0.2s; }
+    .nav-dropdown a:hover { color: var(--ink); }
+    .nav-item:hover .nav-dropdown { display: block; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a href="/" class="site-name">A. M. Alcazar</a>
+      <nav>
+        <div class="nav-item"><a href="https://moviemarginalia.com">Writing</a><div class="nav-dropdown"><a href="https://moviemarginalia.substack.com" target="_blank">Movie Marginalia</a><a href="https://moviemarginalia.com/selected/">Selected Reviews</a></div></div>
+        <a href="/photography.html">Photography</a>
+        <a href="/cv.html">CV</a>
+        <a href="mailto:hello@amalcazar.com">Contact</a>
+      </nav>
+    </header>
+
+    <div class="col-photo">
+      <img src="photo.jpg" alt="A. M. Alcazar">
+    </div>
+
+    <div class="col-text">
+      <h1 class="name">Antonio Miguel Alcazar</h1>
+      <div class="rule"></div>
+      <p class="bio">Film critic. Screen and short story writer.</p>
+      <div class="links">
+        <a href="https://moviemarginalia.com">Movie Marginalia, notes on the experience of cinema.</a>
+        <a href="https://moviemarginalia.com/selected/">Selected Writings, his best reviews.</a>
+      </div>
+    </div>
+
+    <footer>
+      <span>© A. M. Alcazar</span>
+      <a href="mailto:hello@moviemarginalia.com">2026</a>
+    </footer>
+  </div>
+</body>
+</html>
