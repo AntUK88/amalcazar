@@ -17,6 +17,11 @@
       min-height: 100vh;
     }
 
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
     header {
       padding: 0 3rem;
       height: 56px;
@@ -48,6 +53,7 @@
     nav a.active { color: var(--ink); }
 
     .bio-wrap {
+      flex: 1;
       max-width: 680px;
       margin: 0 auto;
       padding: 4rem 2rem 6rem;
