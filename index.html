@@ -154,18 +154,18 @@
       nav { gap: 0.75rem; }
       nav a { font-size: 0.62rem; }
 
-      .page { grid-template-columns: 110px 1fr; }
+      .page { grid-template-columns: 1fr; }
 
-      .col-photo { height: auto; padding: 1.25rem 0.75rem 1.25rem 1rem; }
+      .col-photo { height: auto; padding: 0; align-items: stretch; }
       .col-photo img {
-        height: auto;
         width: 100%;
+        height: auto;
         -webkit-mask-image: none;
         mask-image: none;
       }
 
-      .col-text { padding: 1.25rem 1rem 2rem 0.25rem; gap: 1rem; }
-      .name { font-size: 1.15rem; white-space: normal; }
+      .col-text { padding: 1.5rem 1.25rem 2rem; gap: 1rem; }
+      .name { font-size: 1.6rem; white-space: nowrap; }
       footer { padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
     }
 
