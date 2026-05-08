@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bio — A. M. Alcazar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #fff7ed; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 0 3rem;
+      height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .site-name {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    nav { display: flex; gap: 2rem; align-items: center; }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--ink); }
+    nav a.active { color: var(--ink); }
+
+    .bio-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    footer {
+      padding: 1rem 3rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer span, footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--ink); }
+
+    @media (max-width: 680px) {
+      header { padding: 0 1.5rem; }
+      nav { gap: 1.25rem; }
+      nav a { font-size: 0.68rem; }
+      .bio-wrap { padding: 2.5rem 1.5rem 4rem; }
+      footer { padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
+    }
+    .nav-item { position: relative; display: flex; align-items: center; }
+    .nav-dropdown { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: #fff7ed; border: 1px solid var(--rule); min-width: 160px; z-index: 200; padding: 0.5rem 0; padding-top: 0.75rem; margin-top: 0; }
+    .nav-dropdown a { display: block; padding: 0.45rem 1rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-decoration: none; white-space: nowrap; transition: color 0.2s; }
+    .nav-dropdown a:hover { color: var(--ink); }
+    .nav-item:hover .nav-dropdown { display: block; }
+</style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="site-name">A. M. Alcazar</a>
+    <nav>
+      <div class="nav-item"><a href="https://moviemarginalia.com">Writing</a><div class="nav-dropdown"><a href="https://moviemarginalia.substack.com" target="_blank">Movie Marginalia</a><a href="https://moviemarginalia.com/selected/">Selected Reviews</a></div></div>
+      <a href="/photography.html">Photography</a>
+      <a href="/bio.html" class="active">Bio</a>
+      <a href="/cv.html">CV</a>
+      <a href="mailto:hello@amalcazar.com">Contact</a>
+    </nav>
+  </header>
+
+  <div class="bio-wrap">
+  </div>
+
+  <footer>
+    <span>© A. M. Alcazar</span>
+    <a href="mailto:hello@amalcazar.com">hello@amalcazar.com</a>
+  </footer>
+
+</body>
+</html>
