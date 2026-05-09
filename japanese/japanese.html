@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>日本語 — A. M. Alcazar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --cream: #fff7ed; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
+
+    html, body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 0 2.5rem;
+      height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+    .site-name {
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    nav { display: flex; gap: 2rem; }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--ink); }
+
+    main {
+      flex: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+      width: 100%;
+    }
+
+    .page-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.3rem;
+    }
+    .page-subtitle {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      border: 1px solid var(--rule);
+    }
+
+    .course-card {
+      padding: 1.5rem;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .course-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .course-title { font-size: 1.2rem; font-weight: 400; }
+    .course-jp { font-size: 1rem; color: var(--muted); }
+
+    .lesson-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .lesson-selector label {
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .lesson-selector select {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.82rem;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--rule);
+      color: var(--ink);
+      padding: 0.1rem 0.2rem;
+      cursor: pointer;
+      outline: none;
+    }
+    .lesson-selector select:disabled { color: var(--muted); cursor: default; }
+    .lesson-selector select:focus { border-bottom-color: var(--ink); }
+
+    .card-link {
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.2s;
+    }
+    .card-link:hover { color: var(--ink); }
+    .card-link.unavailable { pointer-events: none; opacity: 0.38; }
+
+    footer {
+      padding: 1rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    footer span, footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--ink); }
+
+    @media (max-width: 680px) {
+      .site-name { display: none; }
+      header { padding: 0 1rem; height: 48px; justify-content: center; }
+      nav { gap: 0.75rem; }
+      nav a { font-size: 0.62rem; }
+      main { padding: 2rem 1rem 3rem; }
+      .course-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="site-name">A. M. Alcazar</a>
+    <nav>
+      <a href="https://moviemarginalia.com">Writing</a>
+      <a href="/photography.html">Photography</a>
+      <a href="/bio.html">Bio</a>
+      <a href="/cv.html">CV</a>
+      <a href="mailto:hello@amalcazar.com">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="page-title">日本語</h1>
+    <p class="page-subtitle">Japanese · Seven Courses</p>
+    <div class="course-grid" id="courseGrid"></div>
+  </main>
+
+  <footer>
+    <span>© A. M. Alcazar</span>
+    <a href="mailto:hello@moviemarginalia.com">2026</a>
+  </footer>
+
+  <script>
+    const COURSES = [
+      { num: 1, title: "Level 1", jp: "初級一", maxLessons: 25, available: true },
+      { num: 2, title: "Level 2", jp: "初級二", maxLessons: 25, available: false },
+      { num: 3, title: "Level 3", jp: "中級一", maxLessons: 25, available: false },
+      { num: 4, title: "Level 4", jp: "中級二", maxLessons: 25, available: false },
+      { num: 5, title: "Level 5", jp: "上級一", maxLessons: 25, available: false },
+      { num: 6, title: "Level 6", jp: "上級二", maxLessons: 25, available: false },
+      { num: 7, title: "Level 7", jp: "上級三", maxLessons: 25, available: false },
+    ];
+
+    const grid = document.getElementById('courseGrid');
+
+    COURSES.forEach(course => {
+      const key = `jp_course${course.num}_maxLesson`;
+      const saved = parseInt(localStorage.getItem(key)) || 1;
+
+      let options = '';
+      for (let i = 1; i <= course.maxLessons; i++) {
+        options += `<option value="${i}"${i === saved ? ' selected' : ''}>Lesson ${i}</option>`;
+      }
+
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      card.innerHTML = `
+        <div class="course-label">Course ${course.num}</div>
+        <div class="course-title">${course.title}</div>
+        <div class="course-jp">${course.jp}</div>
+        <div class="lesson-selector">
+          <label for="sel${course.num}">Up to</label>
+          <select id="sel${course.num}"${!course.available ? ' disabled' : ''}>${options}</select>
+        </div>
+        <a href="japanese${course.num}_quiz.html" class="card-link${!course.available ? ' unavailable' : ''}">
+          ${course.available ? 'Begin quiz →' : 'Coming soon'}
+        </a>
+      `;
+
+      if (course.available) {
+        card.querySelector('select').addEventListener('change', e => {
+          localStorage.setItem(key, e.target.value);
+        });
+      }
+
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>

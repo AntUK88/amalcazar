@@ -1,898 +1,740 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>日本語 Quiz — Level 1</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=DM+Mono:wght@400;500&display=swap');
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>日本語 Quiz — Level 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #fff7ed; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8;
+      --green: #2a5c2a; --green-bg: #eef4ee;
+      --red: #7a2828; --red-bg: #f4eeee;
+    }
 
-  :root {
-    --ink: #1a1410;
-    --paper: #f5f0e8;
-    --aged: #e8dfc8;
-    --red: #c0392b;
-    --red-soft: #e8b4b0;
-    --green: #2d6a4f;
-    --green-soft: #b7d9c8;
-    --muted: #8a7f72;
-    --border: #c8bfb0;
-  }
+    html, body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    header {
+      padding: 0 2.5rem;
+      height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+    .site-name {
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    nav { display: flex; gap: 2rem; }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--ink); }
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px 80px;
-  }
+    main {
+      flex: 1;
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+      width: 100%;
+    }
 
-  header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
+    .back-link {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 2rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--ink); }
 
-  header h1 {
-    font-family: 'Shippori Mincho', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
+    /* ── Start screen ─────────────────────────────────────────────── */
+    .quiz-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.3rem;
+    }
+    .quiz-meta {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
 
-  header h1 span {
-    color: var(--red);
-  }
+    .settings-panel {
+      border: 1px solid var(--rule);
+      margin-bottom: 1.25rem;
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
 
-  header p {
-    margin-top: 8px;
-    color: var(--muted);
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
+    .toggle-group { display: flex; border: 1px solid var(--rule); }
+    .toggle {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.9rem;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .toggle:last-child { border-right: none; }
+    .toggle.active { background: var(--ink); color: var(--cream); }
 
-  /* SCREEN SELECTOR */
-  #screen-selector {
-    width: 100%;
-    max-width: 680px;
-  }
+    .lesson-select {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.85rem;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--rule);
+      color: var(--ink);
+      padding: 0.1rem 0.3rem;
+      cursor: pointer;
+      outline: none;
+    }
+    .lesson-select:focus { border-bottom-color: var(--ink); }
 
-  .selector-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-    margin-bottom: 32px;
-  }
+    .pool-info {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
 
-  .lesson-card {
-    border: 1.5px solid var(--border);
-    background: var(--aged);
-    padding: 18px 20px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    position: relative;
-    overflow: hidden;
-  }
+    .start-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.75rem 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .start-btn:hover { opacity: 0.82; }
+    .start-btn:disabled { opacity: 0.35; cursor: default; }
 
-  .lesson-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--red);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.2s ease;
-  }
+    /* ── Quiz shared ──────────────────────────────────────────────── */
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .progress-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .progress-bar {
+      height: 2px;
+      background: var(--rule);
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .progress-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: var(--ink);
+      transition: width 0.3s ease;
+    }
 
-  .lesson-card:hover::before,
-  .lesson-card.active::before {
-    transform: scaleX(1);
-  }
+    .question-card {
+      border: 1px solid var(--rule);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+    .question-jp {
+      font-size: clamp(2.2rem, 8vw, 4rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .question-romaji {
+      font-size: 1.05rem;
+      color: var(--muted);
+      font-style: italic;
+    }
 
-  .lesson-card:hover,
-  .lesson-card.active {
-    border-color: var(--ink);
-    background: #ede8d8;
-  }
+    /* ── Multiple choice ──────────────────────────────────────────── */
+    .answer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+      margin-bottom: 1.5rem;
+    }
+    .answer-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.35;
+      padding: 0.8rem 1rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.12s, background 0.12s, color 0.12s;
+    }
+    .answer-btn:hover:not(:disabled) { border-color: var(--muted); }
+    .answer-btn.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+    .answer-btn.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
 
-  .lesson-card .lesson-num {
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
+    /* ── Flashcard ────────────────────────────────────────────────── */
+    .flashcard {
+      border: 1px solid var(--rule);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 1.25rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      user-select: none;
+    }
+    .flashcard.revealed { cursor: default; }
+    .flashcard:not(.revealed):hover { border-color: var(--muted); }
+    .flashcard-en { font-size: clamp(1.4rem, 4vw, 2.2rem); font-style: italic; }
+    .flashcard-hint {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+    .flash-actions {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+    .flash-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.4rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .flash-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .flash-btn.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .flash-btn.primary:hover { opacity: 0.82; }
 
-  .lesson-card .lesson-title {
-    font-family: 'Shippori Mincho', serif;
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.3;
-  }
+    /* ── Results ──────────────────────────────────────────────────── */
+    .result-score {
+      font-size: clamp(3rem, 12vw, 6rem);
+      font-weight: 400;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .result-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    .missed-section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .missed-list {
+      border: 1px solid var(--rule);
+      margin-bottom: 2rem;
+    }
+    .missed-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.7rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .missed-item:last-child { border-bottom: none; }
+    .missed-jp { font-size: 1.1rem; }
+    .missed-romaji { font-size: 0.82rem; color: var(--muted); font-style: italic; }
+    .missed-en { margin-left: auto; color: var(--muted); font-size: 0.9rem; }
+    .result-actions { display: flex; gap: 0.6rem; }
+    .result-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.4rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .result-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .result-btn.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .result-btn.primary:hover { opacity: 0.82; }
 
-  .lesson-card .lesson-count {
-    margin-top: 8px;
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
+    footer {
+      padding: 1rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    footer span, footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--ink); }
 
-  .start-row {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+    [hidden] { display: none !important; }
 
-  .btn-primary {
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    padding: 14px 32px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .btn-primary:hover { background: var(--red); }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .quiz-mode-toggle {
-    display: flex;
-    border: 1.5px solid var(--border);
-    overflow: hidden;
-  }
-
-  .quiz-mode-toggle button {
-    background: none;
-    border: none;
-    padding: 10px 18px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    cursor: pointer;
-    color: var(--muted);
-    border-right: 1px solid var(--border);
-    transition: all 0.15s;
-  }
-
-  .quiz-mode-toggle button:last-child { border-right: none; }
-  .quiz-mode-toggle button.active {
-    background: var(--ink);
-    color: var(--paper);
-  }
-
-  /* QUIZ SCREEN */
-  #screen-quiz {
-    width: 100%;
-    max-width: 640px;
-    display: none;
-  }
-
-  .quiz-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
-  }
-
-  .quiz-progress {
-    font-size: 0.75rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-
-  .progress-bar-wrap {
-    height: 3px;
-    background: var(--border);
-    flex: 1;
-    margin: 0 16px;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: var(--red);
-    transition: width 0.3s ease;
-  }
-
-  .btn-back {
-    background: none;
-    border: 1.5px solid var(--border);
-    padding: 8px 16px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    cursor: pointer;
-    color: var(--muted);
-    transition: all 0.15s;
-  }
-
-  .btn-back:hover { border-color: var(--ink); color: var(--ink); }
-
-  .question-card {
-    border: 1.5px solid var(--border);
-    background: var(--aged);
-    padding: 40px 36px;
-    margin-bottom: 20px;
-    animation: fadeSlide 0.25s ease;
-  }
-
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .question-tag {
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .question-text {
-    font-family: 'Shippori Mincho', serif;
-    font-size: clamp(1.4rem, 4vw, 2.2rem);
-    font-weight: 600;
-    line-height: 1.3;
-    margin-bottom: 8px;
-  }
-
-  .question-hint {
-    font-size: 0.78rem;
-    color: var(--muted);
-    font-style: italic;
-    margin-bottom: 32px;
-  }
-
-  .options-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  @media (max-width: 500px) {
-    .options-grid { grid-template-columns: 1fr; }
-  }
-
-  .option-btn {
-    border: 1.5px solid var(--border);
-    background: var(--paper);
-    padding: 14px 16px;
-    text-align: left;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.82rem;
-    cursor: pointer;
-    transition: all 0.15s;
-    line-height: 1.4;
-  }
-
-  .option-btn:hover:not(:disabled) {
-    border-color: var(--ink);
-    background: #ede8d8;
-  }
-
-  .option-btn.correct {
-    border-color: var(--green);
-    background: var(--green-soft);
-    color: var(--green);
-  }
-
-  .option-btn.wrong {
-    border-color: var(--red);
-    background: var(--red-soft);
-    color: var(--red);
-    text-decoration: line-through;
-  }
-
-  .option-btn.reveal {
-    border-color: var(--green);
-    background: var(--green-soft);
-    color: var(--green);
-  }
-
-  .feedback-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 16px;
-  }
-
-  .feedback-msg {
-    font-family: 'Shippori Mincho', serif;
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .feedback-msg.correct { color: var(--green); }
-  .feedback-msg.wrong { color: var(--red); }
-
-  .feedback-note {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 6px;
-    line-height: 1.5;
-  }
-
-  .btn-next {
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    padding: 12px 28px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.82rem;
-    cursor: pointer;
-    transition: background 0.15s;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .btn-next:hover { background: var(--red); }
-
-  /* RESULTS */
-  #screen-results {
-    width: 100%;
-    max-width: 600px;
-    display: none;
-    text-align: center;
-  }
-
-  .result-score {
-    font-family: 'Shippori Mincho', serif;
-    font-size: clamp(3rem, 10vw, 6rem);
-    font-weight: 800;
-    line-height: 1;
-    color: var(--red);
-  }
-
-  .result-label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-top: 8px;
-    margin-bottom: 32px;
-  }
-
-  .result-breakdown {
-    border: 1.5px solid var(--border);
-    background: var(--aged);
-    padding: 24px;
-    margin-bottom: 32px;
-    text-align: left;
-  }
-
-  .result-breakdown h3 {
-    font-family: 'Shippori Mincho', serif;
-    font-weight: 600;
-    margin-bottom: 16px;
-    font-size: 1.1rem;
-  }
-
-  .breakdown-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.8rem;
-    gap: 12px;
-  }
-
-  .breakdown-item:last-child { border-bottom: none; }
-
-  .breakdown-q { color: var(--muted); flex: 1; }
-  .breakdown-a { font-weight: 500; }
-  .breakdown-status { font-size: 0.9rem; flex-shrink: 0; }
-
-  .result-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-</style>
+    @media (max-width: 680px) {
+      .site-name { display: none; }
+      header { padding: 0 1rem; height: 48px; justify-content: center; }
+      nav { gap: 0.75rem; }
+      nav a { font-size: 0.62rem; }
+      main { padding: 1.5rem 1rem 3rem; }
+      .answer-grid { grid-template-columns: 1fr; }
+      .flash-actions { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <a href="/" class="site-name">A. M. Alcazar</a>
+    <nav>
+      <a href="https://moviemarginalia.com">Writing</a>
+      <a href="/photography.html">Photography</a>
+      <a href="/bio.html">Bio</a>
+      <a href="/cv.html">CV</a>
+      <a href="mailto:hello@amalcazar.com">Contact</a>
+    </nav>
+  </header>
 
-<header>
-  <h1>日本語 <span>Quiz</span></h1>
-  <p>JapanesePod101 · Level 1 · Lessons 1–25</p>
-</header>
+  <main>
 
-<!-- SELECTOR -->
-<div id="screen-selector">
+    <!-- ── Start screen ─────────────────────────────────────────── -->
+    <div id="startScreen">
+      <a href="japanese.html" class="back-link">← 日本語</a>
+      <h1 class="quiz-title">日本語 Quiz</h1>
+      <p class="quiz-meta">JapanesePod101 · Level 1 · Lessons 1–25</p>
 
-  <div class="selector-grid" id="lesson-cards"></div>
-
-  <div class="start-row">
-    <div class="quiz-mode-toggle">
-      <button class="active" data-mode="multiple" onclick="setMode(this,'multiple')">Multiple choice</button>
-      <button data-mode="flashcard" onclick="setMode(this,'flashcard')">Flashcard</button>
-    </div>
-    <button class="btn-primary" id="btn-start" onclick="startQuiz()">Start quiz →</button>
-  </div>
-</div>
-
-<!-- QUIZ -->
-<div id="screen-quiz">
-  <div class="quiz-header">
-    <span class="quiz-progress" id="q-counter">1 / 10</span>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
-    </div>
-    <button class="btn-back" onclick="goHome()">← back</button>
-  </div>
-
-  <div class="question-card" id="question-card">
-    <div class="question-tag" id="q-tag"></div>
-    <div class="question-text" id="q-text"></div>
-    <div class="question-hint" id="q-hint"></div>
-    <div class="options-grid" id="options-grid"></div>
-    <div id="feedback-area" style="display:none;margin-top:20px;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
-        <div>
-          <div class="feedback-msg" id="feedback-msg"></div>
-          <div class="feedback-note" id="feedback-note"></div>
+      <div class="settings-panel">
+        <div class="setting-row">
+          <span class="setting-label">Quiz up to</span>
+          <select id="lessonSelect" class="lesson-select"></select>
         </div>
-        <button class="btn-next" onclick="nextQuestion()">Next →</button>
+        <div class="setting-row">
+          <span class="setting-label">Mode</span>
+          <div class="toggle-group">
+            <button class="toggle active" id="mcBtn">Multiple choice</button>
+            <button class="toggle" id="flashBtn">Flashcard</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Show romaji</span>
+          <div class="toggle-group">
+            <button class="toggle active" id="romajiOnBtn">Yes</button>
+            <button class="toggle" id="romajiOffBtn">No</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="pool-info" id="poolInfo"></p>
+      <button class="start-btn" id="startBtn">Start quiz →</button>
+    </div>
+
+    <!-- ── Multiple choice screen ───────────────────────────────── -->
+    <div id="quizScreenMC" hidden>
+      <div class="progress-row">
+        <span class="progress-label" id="mcProgress"></span>
+        <span class="progress-label" id="mcScore"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="mcFill"></div></div>
+      <div class="question-card">
+        <div class="question-jp" id="mcJp"></div>
+        <div class="question-romaji" id="mcRomaji"></div>
+      </div>
+      <div class="answer-grid" id="mcOptions"></div>
+    </div>
+
+    <!-- ── Flashcard screen ──────────────────────────────────────── -->
+    <div id="quizScreenFlash" hidden>
+      <div class="progress-row">
+        <span class="progress-label" id="flashProgress"></span>
+        <span class="progress-label" id="flashScore"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="flashFill"></div></div>
+      <div class="flashcard" id="flashCard">
+        <div class="question-jp" id="flashJp"></div>
+        <div class="question-romaji" id="flashRomaji"></div>
+        <div class="flashcard-en" id="flashEn" hidden></div>
+        <div class="flashcard-hint" id="flashHint">tap to reveal</div>
+      </div>
+      <div class="flash-actions" id="flashActions" hidden>
+        <button class="flash-btn primary" id="gotItBtn">Got it ✓</button>
+        <button class="flash-btn" id="tryAgainBtn">Try again ↺</button>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- RESULTS -->
-<div id="screen-results">
-  <div class="result-score" id="result-score"></div>
-  <div class="result-label" id="result-label"></div>
-  <div class="result-breakdown" id="result-breakdown"></div>
-  <div class="result-actions">
-    <button class="btn-primary" onclick="retryQuiz()">Retry same set</button>
-    <button class="btn-primary" style="background:var(--muted)" onclick="goHome()">New selection</button>
-  </div>
-</div>
+    <!-- ── Result screen ─────────────────────────────────────────── -->
+    <div id="resultScreen" hidden>
+      <div class="result-score" id="resultScore"></div>
+      <p class="result-label" id="resultLabel"></p>
+      <p class="missed-section-label" id="missedLabel"></p>
+      <div class="missed-list" id="missedList"></div>
+      <div class="result-actions">
+        <button class="result-btn primary" id="retryBtn">Try again</button>
+        <button class="result-btn" id="newSelBtn">New selection</button>
+      </div>
+    </div>
 
-<script>
-// ─── DATABASE ───────────────────────────────────────────────────────────────
+  </main>
 
-const LESSONS = [
-  {
-    id: 1,
-    title: "Self Introduction",
-    subtitle: "Basic Bootcamp #1",
-    vocab: [
-      { romaji: "kon'nichi wa", english: "hello", note: "Used any time of day as a general greeting." },
-      { romaji: "watashi", english: "I / me", note: "The standard first-person pronoun." },
-      { romaji: "hajimemashite", english: "Nice to meet you", note: "Only used when meeting someone for the first time." },
-      { romaji: "yoroshiku onegai shimasu", english: "Please be kind to me / Pleased to meet you", note: "Literally 'please look favorably upon me'." },
-      { romaji: "desu", english: "is / am / are (copula)", note: "Always comes at the end of a sentence." },
-    ],
-    grammar: [
-      { point: "Sentence structure: [Topic] wa [Name] desu", english: "My name is [Name].", note: "wa is the topic-marking particle. desu ends the sentence." },
-      { point: "Adding -san after someone's name", english: "Shows respect. Never use it for yourself!", note: "e.g. Tanaka-san." },
-      { point: "Japanese name order", english: "Last name comes before first name.", note: "Taro Tanaka becomes Tanaka Taro in Japanese." },
-    ]
-  },
-  {
-    id: 2,
-    title: "Sentence Structure & Nationalities",
-    subtitle: "Basic Bootcamp #2",
-    vocab: [
-      { romaji: "Nihon", english: "Japan", note: "" },
-      { romaji: "Nihon-jin", english: "Japanese person", note: "-jin means 'person of [country]'." },
-      { romaji: "Amerika", english: "America", note: "" },
-      { romaji: "Amerika-jin", english: "American person", note: "" },
-      { romaji: "Igirisu", english: "England / Britain", note: "" },
-      { romaji: "Igirisu-jin", english: "British person", note: "" },
-      { romaji: "watashi-tachi", english: "we / us", note: "-tachi is the plural suffix." },
-      { romaji: "anata", english: "you", note: "Can be dropped when context is clear." },
-    ],
-    grammar: [
-      { point: "[Country]-jin desu", english: "I am [nationality].", note: "Watashi wa can be dropped if already understood." },
-      { point: "Anata wa nihon-jin desu.", english: "You are Japanese.", note: "" },
-    ]
-  },
-  {
-    id: 3,
-    title: "Useful Learning Phrases",
-    subtitle: "Basic Bootcamp #3",
-    vocab: [
-      { romaji: "sumimasen", english: "Excuse me / I'm sorry", note: "Also used to thank someone for their trouble." },
-      { romaji: "onegai shimasu", english: "Please", note: "Used when requesting a favour or object." },
-      { romaji: "yukkuri", english: "slowly", note: "yukkuri onegai shimasu = please speak slowly." },
-      { romaji: "mo ichi-do", english: "one more time", note: "Mo ichi-do onegai shimasu = please say that again." },
-      { romaji: "Nihon-go", english: "Japanese (language)", note: "go = language." },
-      { romaji: "Eigo", english: "English (language)", note: "" },
-      { romaji: "nan desu ka", english: "What is it? / What is this called?", note: "[word] wa Nihon-go de nan desu ka? = How do you say [word] in Japanese?" },
-    ],
-    grammar: [
-      { point: "[word] wa Nihon-go de nan desu ka?", english: "How do you say [word] in Japanese?", note: "de = in (the language of)." },
-      { point: "Eigo de nan desu ka?", english: "What is it in English?", note: "" },
-    ]
-  },
-  {
-    id: 4,
-    title: "Numbers 0–100",
-    subtitle: "Basic Bootcamp #4",
-    vocab: [
-      { romaji: "zero / rei", english: "0", note: "Both forms are used." },
-      { romaji: "ichi", english: "1", note: "" },
-      { romaji: "ni", english: "2", note: "" },
-      { romaji: "san", english: "3", note: "" },
-      { romaji: "shi / yon", english: "4", note: "shi sounds like 'death' so yon is preferred." },
-      { romaji: "go", english: "5", note: "" },
-      { romaji: "roku", english: "6", note: "" },
-      { romaji: "shichi / nana", english: "7", note: "" },
-      { romaji: "hachi", english: "8", note: "Lucky — the kanji broadens out like growing prosperity." },
-      { romaji: "ku / kyuu", english: "9", note: "ku sounds like 'suffering' so kyuu is preferred." },
-      { romaji: "juu", english: "10", note: "" },
-      { romaji: "juu-ichi", english: "11", note: "juu + ichi" },
-      { romaji: "ni-juu", english: "20", note: "" },
-      { romaji: "hyaku", english: "100", note: "" },
-    ],
-    grammar: [
-      { point: "11–19: juu + [digit]", english: "e.g. juu-san = 13", note: "" },
-      { point: "Multiples of 10: [digit] + juu", english: "e.g. san-juu = 30", note: "" },
-      { point: "4 (shi) and 9 (ku) are considered unlucky", english: "Avoided in hospitals and apartment buildings.", note: "" },
-    ]
-  },
-  {
-    id: 5,
-    title: "Numbers 100–100,000",
-    subtitle: "Basic Bootcamp #5",
-    vocab: [
-      { romaji: "hyaku", english: "100", note: "" },
-      { romaji: "ni-hyaku", english: "200", note: "" },
-      { romaji: "san-byaku", english: "300", note: "Sound change: san + hyaku → san-byaku" },
-      { romaji: "ro-ppyaku", english: "600", note: "Irregular — note the double p." },
-      { romaji: "ha-ppyaku", english: "800", note: "Irregular — note the double p." },
-      { romaji: "sen", english: "1,000", note: "" },
-      { romaji: "ni-sen", english: "2,000", note: "" },
-      { romaji: "san-zen", english: "3,000", note: "Sound change: san + sen → san-zen" },
-      { romaji: "ha-ssen", english: "8,000", note: "Irregular double s." },
-      { romaji: "ichi-man", english: "10,000", note: "man = ten thousand unit (unique to Japanese/Chinese counting)." },
-      { romaji: "hyaku-man", english: "1,000,000", note: "" },
-    ],
-    grammar: [
-      { point: "[digit] + hyaku = hundreds", english: "e.g. go-hyaku = 500", note: "Watch for san-byaku, ro-ppyaku, ha-ppyaku." },
-      { point: "[digit] + sen = thousands", english: "e.g. roku-sen = 6,000", note: "Watch for san-zen, ha-ssen." },
-      { point: "10,000 unit is man, not ten-thousand", english: "Japanese counts in units of 10,000 (man), not 1,000.", note: "" },
-    ]
-  },
-  {
-    id: 6,
-    title: "Top 5 Must-Know Phrases",
-    subtitle: "All About #5",
-    vocab: [
-      { romaji: "sumimasen", english: "Excuse me / I'm sorry / Thank you (for your trouble)", note: "The most versatile phrase in the language." },
-      { romaji: "doumo", english: "Thanks / Hi (casual)", note: "More casual than arigato gozaimasu." },
-      { romaji: "douzo", english: "Please go ahead / Here you go", note: "Use when offering something or letting someone pass." },
-      { romaji: "o-negai shimasu", english: "Please (request/favour)", note: "Use when asking for something tangible or a service." },
-      { romaji: "hai", english: "Yes / Right / Here you go / Pardon?", note: "Rising intonation (hai?) = 'Excuse me?' or 'Pardon?'" },
-      { romaji: "arigato gozaimasu", english: "Thank you very much (formal)", note: "" },
-    ],
-    grammar: []
-  },
-  {
-    id: 7,
-    title: "Classroom Phrases",
-    subtitle: "All About #12",
-    vocab: [
-      { romaji: "itte kudasai", english: "Please say it / Please repeat.", note: "" },
-      { romaji: "mite kudasai", english: "Please look.", note: "" },
-      { romaji: "yonde kudasai", english: "Please read.", note: "" },
-      { romaji: "kaite kudasai", english: "Please write it.", note: "" },
-      { romaji: "wakarimasu ka?", english: "Do you understand?", note: "" },
-      { romaji: "shitsumon arimasu ka?", english: "Are there any questions?", note: "" },
-      { romaji: "ii desu ka?", english: "Is it okay? / Is everything alright?", note: "Teachers use this to confirm understanding." },
-    ],
-    grammar: [
-      { point: "[verb] + kudasai", english: "Please [do verb].", note: "kudasai makes a polite request." },
-    ]
-  },
-  {
-    id: 8,
-    title: "Slang & Expressions",
-    subtitle: "All About #13",
-    vocab: [
-      { romaji: "sugoi", english: "Wow / Amazing / Great", note: "Very common exclamation." },
-      { romaji: "baka", english: "Idiot / Fool (noun); stupid (adj: baka na)", note: "Can be playful or insulting depending on context." },
-      { romaji: "uso!", english: "No way! / Really?!", note: "Literally 'lie', used to express surprise." },
-      { romaji: "chotto", english: "A little / Hmm / Just a moment", note: "Also used as polite refusal: chotto... (trailing off)." },
-      { romaji: "yabai", english: "Oh no! / Awesome / Terrible (context-dependent)", note: "Very slangy. Yabai! = 'Oh no!' or surprise." },
-      { romaji: "maji", english: "Seriously / Really?", note: "Maji de?! = 'Are you serious?!'" },
-      { romaji: "ne / un", english: "Yeah / I know (agreement)", note: "Aizuchi — interjections to show you're listening." },
-      { romaji: "hee", english: "Oh! / Whoa! (impressed or surprised)", note: "Aizuchi." },
-    ],
-    grammar: []
-  },
-  {
-    id: 9,
-    title: "Common Mistakes to Avoid",
-    subtitle: "All About #14",
-    vocab: [
-      { romaji: "kirei", english: "pretty / beautiful", note: "NOT to be confused with kirai (hated)." },
-      { romaji: "kirai", english: "hated / disliked", note: "" },
-      { romaji: "kawaii", english: "cute", note: "NOT to be confused with kowai (scary)." },
-      { romaji: "kowai", english: "scary", note: "" },
-      { romaji: "hiroi", english: "spacious / wide", note: "NOT to be confused with hidoi (terrible)." },
-      { romaji: "hidoi", english: "terrible / cruel", note: "" },
-      { romaji: "sensei", english: "teacher", note: "Long vowel — sens-ee, not sen-sei as two separate sounds." },
-    ],
-    grammar: [
-      { point: "Never attach -san to your own name", english: "Correct: Watashi wa John desu. Wrong: Watashi wa John-san desu.", note: "-san shows respect for others, never yourself." },
-      { point: "Long vowels change meaning", english: "o-ba-san (aunt) vs o-baa-san (grandmother)", note: "o-ji-san (uncle) vs o-jii-san (grandfather)" },
-      { point: "Politeness levels", english: "Use formal speech with teachers, elders, and senpai.", note: "Informal speech with friends only." },
-    ]
-  },
-  {
-    id: 10,
-    title: "Grammar Concepts",
-    subtitle: "All About #3 — Core Grammar",
-    vocab: [
-      { romaji: "wa", english: "topic-marking particle", note: "Marks what the sentence is ABOUT. 'As for X...'." },
-      { romaji: "ka", english: "question particle", note: "Added to the end of a sentence to make it a question." },
-      { romaji: "jin", english: "person (suffix for nationality)", note: "Nihon-jin, Amerika-jin, etc." },
-      { romaji: "go", english: "language (suffix)", note: "Nihon-go, Eigo, etc." },
-      { romaji: "ikimasu", english: "to go", note: "Verb stays the same regardless of subject (I go / he goes = ikimasu)." },
-    ],
-    grammar: [
-      { point: "Japanese word order: SOV", english: "Subject → Object → Verb. The verb always comes last.", note: "'I fruit eat' rather than 'I eat fruit'." },
-      { point: "Japanese has only two tenses: past and non-past", english: "Present and future use the same form. Context clarifies.", note: "e.g. ikimasu = I go / I will go" },
-      { point: "No verb conjugation for person", english: "ikimasu works for I/you/he/we/they.", note: "Huge advantage over English and Romance languages." },
-      { point: "Questions: add ka to the end", english: "Kare wa gakusei desu. → Kare wa gakusei desu ka?", note: "No word-order change needed." },
-      { point: "Subjects are often dropped when understood", english: "Context makes the subject clear — stating it every time sounds unnatural.", note: "" },
-    ]
-  },
-];
+  <footer>
+    <span>© A. M. Alcazar</span>
+    <a href="mailto:hello@moviemarginalia.com">2026</a>
+  </footer>
 
-// ─── STATE ──────────────────────────────────────────────────────────────────
+  <script>
+    // ── Vocabulary data ────────────────────────────────────────────────────────
+    // Add new lessons by appending objects with the next lesson number.
+    const VOCAB = [
+      // Lesson 1 — Greetings
+      { lesson: 1, jp: "こんにちは",       romaji: "konnichiwa",        en: "Hello" },
+      { lesson: 1, jp: "おはようございます", romaji: "ohayou gozaimasu",  en: "Good morning" },
+      { lesson: 1, jp: "こんばんは",        romaji: "konbanwa",           en: "Good evening" },
+      { lesson: 1, jp: "さようなら",        romaji: "sayounara",          en: "Goodbye" },
+      { lesson: 1, jp: "ありがとう",        romaji: "arigatou",           en: "Thank you" },
+      { lesson: 1, jp: "どういたしまして",  romaji: "dou itashimashite",  en: "You're welcome" },
+      { lesson: 1, jp: "はい",             romaji: "hai",                en: "Yes" },
+      { lesson: 1, jp: "いいえ",           romaji: "iie",                en: "No" },
+      { lesson: 1, jp: "すみません",        romaji: "sumimasen",          en: "Excuse me" },
+      { lesson: 1, jp: "ごめんなさい",      romaji: "gomen nasai",        en: "I'm sorry" },
 
-let selectedLessons = new Set([1]);
-let quizMode = 'multiple'; // 'multiple' or 'flashcard'
-let questions = [];
-let currentQ = 0;
-let answers = [];
-let answered = false;
+      // Lesson 2 — Self-Introduction
+      { lesson: 2, jp: "わたし",           romaji: "watashi",            en: "I / me" },
+      { lesson: 2, jp: "あなた",           romaji: "anata",              en: "You" },
+      { lesson: 2, jp: "なまえ",           romaji: "namae",              en: "Name" },
+      { lesson: 2, jp: "はじめまして",     romaji: "hajimemashite",      en: "Nice to meet you" },
+      { lesson: 2, jp: "どうぞよろしく",   romaji: "douzo yoroshiku",    en: "Pleased to meet you" },
+      { lesson: 2, jp: "です",             romaji: "desu",               en: "Is / am / are" },
+      { lesson: 2, jp: "にほんご",         romaji: "nihongo",            en: "Japanese language" },
+      { lesson: 2, jp: "えいご",           romaji: "eigo",               en: "English language" },
+      { lesson: 2, jp: "がくせい",         romaji: "gakusei",            en: "Student" },
+      { lesson: 2, jp: "せんせい",         romaji: "sensei",             en: "Teacher" },
 
-// ─── SELECTOR SCREEN ────────────────────────────────────────────────────────
+      // Lesson 3 — Numbers 1–10
+      { lesson: 3, jp: "いち",   romaji: "ichi",   en: "One" },
+      { lesson: 3, jp: "に",     romaji: "ni",     en: "Two" },
+      { lesson: 3, jp: "さん",   romaji: "san",    en: "Three" },
+      { lesson: 3, jp: "よん",   romaji: "yon",    en: "Four" },
+      { lesson: 3, jp: "ご",     romaji: "go",     en: "Five" },
+      { lesson: 3, jp: "ろく",   romaji: "roku",   en: "Six" },
+      { lesson: 3, jp: "なな",   romaji: "nana",   en: "Seven" },
+      { lesson: 3, jp: "はち",   romaji: "hachi",  en: "Eight" },
+      { lesson: 3, jp: "きゅう", romaji: "kyuu",   en: "Nine" },
+      { lesson: 3, jp: "じゅう", romaji: "juu",    en: "Ten" },
 
-function buildSelector() {
-  const grid = document.getElementById('lesson-cards');
-  grid.innerHTML = '';
-  LESSONS.forEach(l => {
-    const total = l.vocab.length + l.grammar.length;
-    const div = document.createElement('div');
-    div.className = 'lesson-card' + (selectedLessons.has(l.id) ? ' active' : '');
-    div.innerHTML = `
-      <div class="lesson-num">Lesson ${l.id}</div>
-      <div class="lesson-title">${l.title}</div>
-      <div class="lesson-count">${total} items</div>
-    `;
-    div.addEventListener('click', () => toggleLesson(l.id, div));
-    grid.appendChild(div);
-  });
-}
+      // Lesson 4 — Family
+      { lesson: 4, jp: "かぞく",     romaji: "kazoku",    en: "Family" },
+      { lesson: 4, jp: "おかあさん", romaji: "okaasan",   en: "Mother" },
+      { lesson: 4, jp: "おとうさん", romaji: "otousan",   en: "Father" },
+      { lesson: 4, jp: "おにいさん", romaji: "oniisan",   en: "Older brother" },
+      { lesson: 4, jp: "おねえさん", romaji: "oneesan",   en: "Older sister" },
+      { lesson: 4, jp: "おとうと",   romaji: "otouto",    en: "Younger brother" },
+      { lesson: 4, jp: "いもうと",   romaji: "imouto",    en: "Younger sister" },
+      { lesson: 4, jp: "そふ",       romaji: "sofu",      en: "Grandfather" },
+      { lesson: 4, jp: "そぼ",       romaji: "sobo",      en: "Grandmother" },
+      { lesson: 4, jp: "こども",     romaji: "kodomo",    en: "Child" },
 
-function toggleLesson(id, el) {
-  if (selectedLessons.has(id)) {
-    if (selectedLessons.size === 1) return; // keep at least one
-    selectedLessons.delete(id);
-    el.classList.remove('active');
-  } else {
-    selectedLessons.add(id);
-    el.classList.add('active');
-  }
-}
+      // Lesson 5 — Food & Drink
+      { lesson: 5, jp: "たべもの", romaji: "tabemono", en: "Food" },
+      { lesson: 5, jp: "のみもの", romaji: "nomimono", en: "Drink" },
+      { lesson: 5, jp: "みず",     romaji: "mizu",     en: "Water" },
+      { lesson: 5, jp: "ごはん",   romaji: "gohan",    en: "Rice / meal" },
+      { lesson: 5, jp: "おちゃ",   romaji: "ocha",     en: "Tea" },
+      { lesson: 5, jp: "コーヒー", romaji: "koohii",   en: "Coffee" },
+      { lesson: 5, jp: "パン",     romaji: "pan",      en: "Bread" },
+      { lesson: 5, jp: "にく",     romaji: "niku",     en: "Meat" },
+      { lesson: 5, jp: "さかな",   romaji: "sakana",   en: "Fish" },
+      { lesson: 5, jp: "やさい",   romaji: "yasai",    en: "Vegetables" },
 
-function setMode(btn, mode) {
-  document.querySelectorAll('.quiz-mode-toggle button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  quizMode = mode;
-}
+      // Lessons 6–25: add vocabulary below as you progress through the course.
+    ];
 
-// ─── QUIZ GENERATION ────────────────────────────────────────────────────────
+    // ── Constants & state ──────────────────────────────────────────────────────
+    const STORAGE_KEY = 'jp_course1_maxLesson';
+    const Q_COUNT = 10;
 
-function buildQuestions() {
-  const pool = [];
-  LESSONS.filter(l => selectedLessons.has(l.id)).forEach(l => {
-    l.vocab.forEach(v => {
-      pool.push({ type: 'vocab', question: v.romaji, answer: v.english, note: v.note, lesson: l.id });
-      pool.push({ type: 'vocab_reverse', question: v.english, answer: v.romaji, note: v.note, lesson: l.id });
+    const availableLessons = [...new Set(VOCAB.map(v => v.lesson))].sort((a, b) => a - b);
+    const lessonMax = availableLessons[availableLessons.length - 1];
+
+    let maxLesson = Math.min(parseInt(localStorage.getItem(STORAGE_KEY)) || 1, lessonMax);
+    let mode = 'mc';
+    let showRomaji = true;
+    let questions = [];
+    let currentQ = 0;
+    let score = 0;
+    let missed = [];
+    let flashRevealed = false;
+
+    // ── Lesson selector ────────────────────────────────────────────────────────
+    const lessonSelect = document.getElementById('lessonSelect');
+    availableLessons.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = `Lesson ${n}`;
+      if (n === maxLesson) opt.selected = true;
+      lessonSelect.appendChild(opt);
     });
-    l.grammar.forEach(g => {
-      pool.push({ type: 'grammar', question: g.point, answer: g.english, note: g.note, lesson: l.id });
+    lessonSelect.addEventListener('change', () => {
+      maxLesson = parseInt(lessonSelect.value);
+      localStorage.setItem(STORAGE_KEY, maxLesson);
+      updatePoolInfo();
     });
-  });
-  // Shuffle and cap
-  shuffle(pool);
-  return pool.slice(0, Math.min(pool.length, 15));
-}
 
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
+    function updatePoolInfo() {
+      const pool = getPool();
+      const lessons = [...new Set(pool.map(v => v.lesson))].length;
+      const q = Math.min(Q_COUNT, pool.length);
+      document.getElementById('poolInfo').textContent =
+        `${q} question${q !== 1 ? 's' : ''} · ${pool.length} word${pool.length !== 1 ? 's' : ''} · ${lessons} lesson${lessons !== 1 ? 's' : ''}`;
+      document.getElementById('startBtn').disabled = pool.length < 2;
+    }
+    updatePoolInfo();
 
-function buildDistractors(correct, allQuestions, currentIndex) {
-  const allAnswers = allQuestions.map(q => q.answer).filter(a => a !== correct);
-  // Also pull from all vocab for more variety
-  const extras = [];
-  LESSONS.forEach(l => {
-    l.vocab.forEach(v => { extras.push(v.english); extras.push(v.romaji); });
-    l.grammar.forEach(g => { extras.push(g.english); });
-  });
-  const pool = [...new Set([...allAnswers, ...extras])].filter(a => a !== correct);
-  shuffle(pool);
-  const distractors = pool.slice(0, 3);
-  const options = [correct, ...distractors];
-  shuffle(options);
-  return options;
-}
+    // ── Mode & romaji toggles ──────────────────────────────────────────────────
+    document.getElementById('mcBtn').addEventListener('click', () => setMode('mc'));
+    document.getElementById('flashBtn').addEventListener('click', () => setMode('flash'));
+    document.getElementById('romajiOnBtn').addEventListener('click', () => setRomaji(true));
+    document.getElementById('romajiOffBtn').addEventListener('click', () => setRomaji(false));
 
-// ─── START / NAVIGATION ─────────────────────────────────────────────────────
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mcBtn').classList.toggle('active', m === 'mc');
+      document.getElementById('flashBtn').classList.toggle('active', m === 'flash');
+    }
+    function setRomaji(on) {
+      showRomaji = on;
+      document.getElementById('romajiOnBtn').classList.toggle('active', on);
+      document.getElementById('romajiOffBtn').classList.toggle('active', !on);
+    }
 
-function startQuiz() {
-  questions = buildQuestions();
-  answers = [];
-  currentQ = 0;
-  answered = false;
+    // ── Utilities ──────────────────────────────────────────────────────────────
+    function getPool() { return VOCAB.filter(v => v.lesson <= maxLesson); }
 
-  document.getElementById('screen-selector').style.display = 'none';
-  document.getElementById('screen-results').style.display = 'none';
-  document.getElementById('screen-quiz').style.display = 'block';
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
-  renderQuestion();
-}
+    function showOnly(id) {
+      ['startScreen', 'quizScreenMC', 'quizScreenFlash', 'resultScreen'].forEach(s => {
+        document.getElementById(s).hidden = s !== id;
+      });
+    }
 
-function goHome() {
-  document.getElementById('screen-quiz').style.display = 'none';
-  document.getElementById('screen-results').style.display = 'none';
-  document.getElementById('screen-selector').style.display = 'block';
-}
+    // ── Start / restart ────────────────────────────────────────────────────────
+    document.getElementById('startBtn').addEventListener('click', startQuiz);
+    document.getElementById('retryBtn').addEventListener('click', startQuiz);
+    document.getElementById('newSelBtn').addEventListener('click', () => showOnly('startScreen'));
 
-function retryQuiz() {
-  document.getElementById('screen-results').style.display = 'none';
-  startQuiz();
-}
+    function startQuiz() {
+      const pool = getPool();
+      questions = shuffle(pool).slice(0, Math.min(Q_COUNT, pool.length));
+      currentQ = 0;
+      score = 0;
+      missed = [];
+      if (mode === 'mc') {
+        showOnly('quizScreenMC');
+        renderMC();
+      } else {
+        showOnly('quizScreenFlash');
+        renderFlash();
+      }
+    }
 
-// ─── RENDER ─────────────────────────────────────────────────────────────────
+    // ── Multiple choice ────────────────────────────────────────────────────────
+    function renderMC() {
+      const pool = getPool();
+      const q = questions[currentQ];
+      const total = questions.length;
 
-function renderQuestion() {
-  answered = false;
-  const q = questions[currentQ];
-  const total = questions.length;
+      document.getElementById('mcProgress').textContent = `${currentQ + 1} / ${total}`;
+      document.getElementById('mcScore').textContent = `${score} correct`;
+      document.getElementById('mcFill').style.width = `${(currentQ / total) * 100}%`;
+      document.getElementById('mcJp').textContent = q.jp;
 
-  document.getElementById('q-counter').textContent = `${currentQ + 1} / ${total}`;
-  document.getElementById('progress-fill').style.width = `${(currentQ / total) * 100}%`;
+      const romEl = document.getElementById('mcRomaji');
+      romEl.textContent = showRomaji ? q.romaji : '';
+      romEl.hidden = !showRomaji;
 
-  const typeLabel = q.type === 'vocab' ? 'Romaji → English'
-    : q.type === 'vocab_reverse' ? 'English → Romaji'
-    : 'Grammar';
-  document.getElementById('q-tag').textContent = `Lesson ${q.lesson} · ${typeLabel}`;
-  document.getElementById('q-text').textContent = q.question;
-  document.getElementById('q-hint').textContent = q.type === 'vocab_reverse'
-    ? 'Give the romaji.' : q.type === 'vocab' ? 'What does this mean?' : 'What does this mean in English?';
+      const pool2 = pool.filter(v => v.en !== q.en);
+      const wrongs = shuffle(pool2).slice(0, 3);
+      const options = shuffle([q, ...wrongs]);
 
-  document.getElementById('feedback-area').style.display = 'none';
-  document.getElementById('feedback-msg').textContent = '';
-  document.getElementById('feedback-note').textContent = '';
+      const grid = document.getElementById('mcOptions');
+      grid.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = opt.en;
+        btn.addEventListener('click', () => handleMC(btn, opt.en === q.en, q));
+        grid.appendChild(btn);
+      });
+    }
 
-  const grid = document.getElementById('options-grid');
-  grid.innerHTML = '';
+    function handleMC(clicked, correct, q) {
+      document.querySelectorAll('.answer-btn').forEach(b => {
+        b.disabled = true;
+        if (b.textContent === q.en) b.classList.add('correct');
+      });
+      if (correct) {
+        score++;
+      } else {
+        clicked.classList.add('wrong');
+        missed.push(q);
+      }
+      document.getElementById('mcScore').textContent = `${score} correct`;
+      setTimeout(() => {
+        currentQ++;
+        currentQ < questions.length ? renderMC() : showResults();
+      }, 1200);
+    }
 
-  if (quizMode === 'flashcard') {
-    grid.style.gridTemplateColumns = '1fr';
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = 'Tap to reveal answer';
-    btn.onclick = () => revealFlashcard(q, btn);
-    grid.appendChild(btn);
-  } else {
-    grid.style.gridTemplateColumns = '';
-    const options = buildDistractors(q.answer, questions, currentQ);
-    options.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      btn.textContent = opt;
-      btn.onclick = () => handleAnswer(opt, q, options);
-      grid.appendChild(btn);
+    // ── Flashcard ──────────────────────────────────────────────────────────────
+    function renderFlash() {
+      const q = questions[currentQ];
+      const total = questions.length;
+      flashRevealed = false;
+
+      document.getElementById('flashProgress').textContent = `${currentQ + 1} / ${total}`;
+      document.getElementById('flashScore').textContent = `${score} correct`;
+      document.getElementById('flashFill').style.width = `${(currentQ / total) * 100}%`;
+      document.getElementById('flashJp').textContent = q.jp;
+
+      const romEl = document.getElementById('flashRomaji');
+      romEl.textContent = showRomaji ? q.romaji : '';
+      romEl.hidden = !showRomaji;
+
+      document.getElementById('flashEn').textContent = q.en;
+      document.getElementById('flashEn').hidden = true;
+      document.getElementById('flashHint').hidden = false;
+      document.getElementById('flashActions').hidden = true;
+
+      const card = document.getElementById('flashCard');
+      card.classList.remove('revealed');
+    }
+
+    document.getElementById('flashCard').addEventListener('click', () => {
+      if (flashRevealed) return;
+      flashRevealed = true;
+      document.getElementById('flashEn').hidden = false;
+      document.getElementById('flashHint').hidden = true;
+      document.getElementById('flashActions').hidden = false;
+      document.getElementById('flashCard').classList.add('revealed');
     });
-  }
-}
 
-function handleAnswer(chosen, q, options) {
-  if (answered) return;
-  answered = true;
-  const correct = chosen === q.answer;
-  answers.push({ question: q.question, correct: q.answer, chosen, isCorrect: correct });
+    document.getElementById('gotItBtn').addEventListener('click', () => rateFlash(true));
+    document.getElementById('tryAgainBtn').addEventListener('click', () => rateFlash(false));
 
-  document.querySelectorAll('.option-btn').forEach(btn => {
-    btn.disabled = true;
-    if (btn.textContent === q.answer) btn.classList.add('correct');
-    else if (btn.textContent === chosen && !correct) btn.classList.add('wrong');
-  });
+    function rateFlash(gotIt) {
+      if (gotIt) score++;
+      else missed.push(questions[currentQ]);
+      document.getElementById('flashScore').textContent = `${score} correct`;
+      currentQ++;
+      currentQ < questions.length ? renderFlash() : showResults();
+    }
 
-  const fb = document.getElementById('feedback-area');
-  fb.style.display = 'block';
-  const msg = document.getElementById('feedback-msg');
-  msg.textContent = correct ? '✓ Correct' : '✗ Wrong';
-  msg.className = 'feedback-msg ' + (correct ? 'correct' : 'wrong');
-  if (q.note) {
-    document.getElementById('feedback-note').textContent = q.note;
-  } else {
-    document.getElementById('feedback-note').textContent = correct ? '' : `Correct answer: ${q.answer}`;
-  }
-}
+    // ── Results ────────────────────────────────────────────────────────────────
+    function showResults() {
+      showOnly('resultScreen');
+      const total = questions.length;
+      document.getElementById('resultScore').textContent = `${score} / ${total}`;
+      document.getElementById('resultLabel').textContent =
+        score === total        ? 'Perfect!' :
+        score >= total * 0.8   ? 'Great work.' :
+        score >= total * 0.6   ? 'Good effort.' : 'Keep practicing.';
 
-function revealFlashcard(q, btn) {
-  if (answered) return;
-  answered = true;
-  btn.textContent = q.answer;
-  btn.classList.add('reveal');
-  btn.disabled = true;
+      const missedList = document.getElementById('missedList');
+      const missedLabel = document.getElementById('missedLabel');
+      missedList.innerHTML = '';
 
-  const fb = document.getElementById('feedback-area');
-  fb.style.display = 'block';
-  const msg = document.getElementById('feedback-msg');
-  msg.textContent = q.note || '';
-  msg.className = 'feedback-msg';
-  document.getElementById('feedback-note').textContent = '';
-  answers.push({ question: q.question, correct: q.answer, chosen: q.answer, isCorrect: true });
-}
-
-function nextQuestion() {
-  currentQ++;
-  if (currentQ >= questions.length) {
-    showResults();
-  } else {
-    document.getElementById('question-card').style.animation = 'none';
-    requestAnimationFrame(() => {
-      document.getElementById('question-card').style.animation = '';
-      renderQuestion();
-    });
-  }
-}
-
-// ─── RESULTS ────────────────────────────────────────────────────────────────
-
-function showResults() {
-  document.getElementById('screen-quiz').style.display = 'none';
-  document.getElementById('screen-results').style.display = 'block';
-
-  const correct = answers.filter(a => a.isCorrect).length;
-  const total = answers.length;
-  const pct = Math.round((correct / total) * 100);
-
-  document.getElementById('result-score').textContent = `${pct}%`;
-  const label = pct === 100 ? '完璧！ Perfect score!' : pct >= 80 ? 'よくできました — Well done!' : pct >= 60 ? 'まあまあ — Not bad.' : 'もっと練習 — Keep practising.';
-  document.getElementById('result-label').textContent = `${correct} / ${total} correct · ${label}`;
-
-  const bd = document.getElementById('result-breakdown');
-  bd.innerHTML = '<h3>Review</h3>';
-  answers.forEach(a => {
-    const row = document.createElement('div');
-    row.className = 'breakdown-item';
-    row.innerHTML = `
-      <span class="breakdown-q">${a.question}</span>
-      <span class="breakdown-a">${a.correct}</span>
-      <span class="breakdown-status">${a.isCorrect ? '✓' : '✗'}</span>
-    `;
-    bd.appendChild(row);
-  });
-}
-
-// ─── INIT ────────────────────────────────────────────────────────────────────
-
-buildSelector();
-</script>
+      if (missed.length === 0) {
+        missedList.hidden = true;
+        missedLabel.hidden = true;
+      } else {
+        missedList.hidden = false;
+        missedLabel.hidden = false;
+        missedLabel.textContent = `Missed — ${missed.length} word${missed.length !== 1 ? 's' : ''}`;
+        missed.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'missed-item';
+          row.innerHTML = `
+            <span class="missed-jp">${item.jp}</span>
+            <span class="missed-romaji">${item.romaji}</span>
+            <span class="missed-en">${item.en}</span>
+          `;
+          missedList.appendChild(row);
+        });
+      }
+    }
+  </script>
 </body>
 </html>
