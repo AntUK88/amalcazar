@@ -154,19 +154,47 @@
       nav { gap: 0.75rem; }
       nav a { font-size: 0.62rem; }
 
-      .page { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; }
+      .page {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto auto auto auto;
+        grid-template-areas:
+          "header header"
+          "photo  name  "
+          "bio    bio   "
+          "links  links "
+          "footer footer";
+      }
 
-      .col-photo { height: auto; padding: 0; }
+      .col-photo {
+        grid-area: photo;
+        height: auto;
+        padding: 0;
+        display: block;
+        overflow: hidden;
+      }
       .col-photo img {
         width: 100%;
         height: auto;
-        -webkit-mask-image: none;
-        mask-image: none;
+        display: block;
+        filter: grayscale(100%) sepia(15%);
+        -webkit-mask-image:
+          linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 4%, rgba(0,0,0,0.7) 8%, black 13%, black 87%, rgba(0,0,0,0.7) 92%, rgba(0,0,0,0.3) 96%, transparent 100%),
+          linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 2%, rgba(0,0,0,0.7) 5%, black 9%, black 91%, rgba(0,0,0,0.7) 95%, rgba(0,0,0,0.3) 98%, transparent 100%);
+        -webkit-mask-composite: source-in;
+        mask-image:
+          linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 4%, rgba(0,0,0,0.7) 8%, black 13%, black 87%, rgba(0,0,0,0.7) 92%, rgba(0,0,0,0.3) 96%, transparent 100%),
+          linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 2%, rgba(0,0,0,0.7) 5%, black 9%, black 91%, rgba(0,0,0,0.7) 95%, rgba(0,0,0,0.3) 98%, transparent 100%);
+        mask-composite: intersect;
       }
 
-      .col-text { padding: 1.5rem 1.25rem 2rem; gap: 1rem; }
-      .name { font-size: 1.6rem; white-space: nowrap; }
-      footer { padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
+      .col-text { display: contents; }
+
+      .name { grid-area: name; font-size: 1rem; white-space: nowrap; align-self: center; padding: 0 0.75rem; }
+      .rule { display: none; }
+      .bio { grid-area: bio; max-width: none; padding: 1rem 1.25rem 0; }
+      .links { grid-area: links; padding: 0.75rem 1.25rem 2rem; }
+
+      footer { grid-area: footer; padding: 1rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
     }
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
