@@ -155,19 +155,21 @@
       nav a { font-size: 0.62rem; }
 
       .page {
-        grid-template-columns: 1fr auto;
-        grid-template-rows: auto auto auto auto auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto auto auto;
         grid-template-areas:
-          "header header"
-          "photo  name  "
-          "bio    bio   "
-          "links  links "
-          "footer footer";
+          "header"
+          "photo"
+          "name"
+          "bio"
+          "links"
+          "footer";
       }
 
       .col-photo {
         grid-area: photo;
-        height: auto;
+        width: 55%;
+        margin: 0 auto;
         padding: 0;
         display: block;
         overflow: hidden;
@@ -189,7 +191,7 @@
 
       .col-text { display: contents; }
 
-      .name { grid-area: name; font-size: 1rem; white-space: nowrap; align-self: center; padding: 0 0.75rem; }
+      .name { grid-area: name; font-size: 1.2rem; font-weight: 500; white-space: nowrap; text-align: center; padding: 0.75rem 1rem 0; }
       .rule { display: none; }
       .bio { grid-area: bio; max-width: none; padding: 1rem 1.25rem 0; }
       .links { grid-area: links; padding: 0.75rem 1.25rem 2rem; }
