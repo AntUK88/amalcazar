@@ -196,6 +196,18 @@
 
     const grid = document.getElementById('courseGrid');
 
+    // Kana card (no lesson selector — uses its own selection UI)
+    const kanaCard = document.createElement('div');
+    kanaCard.className = 'course-card';
+    kanaCard.innerHTML = `
+      <div class="course-label">Foundations</div>
+      <div class="course-title">Kana</div>
+      <div class="course-jp">かな</div>
+      <div style="font-size:0.72rem;letter-spacing:0.06em;color:var(--muted);margin-top:0.25rem;">Hiragana · Katakana · Kanji</div>
+      <a href="kana_quiz.html" class="card-link" style="margin-top:0.5rem;">Begin quiz →</a>
+    `;
+    grid.appendChild(kanaCard);
+
     COURSES.forEach(course => {
       const key = `jp_course${course.num}_maxLesson`;
       const saved = parseInt(localStorage.getItem(key)) || 1;

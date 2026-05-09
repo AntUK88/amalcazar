@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kana Quiz — かな</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #fff7ed; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8;
+      --green: #2a5c2a; --green-bg: #eef4ee;
+      --red: #7a2828; --red-bg: #f4eeee;
+    }
+
+    html, body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 0 2.5rem;
+      height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+    .site-name { font-weight: 400; font-size: 1rem; letter-spacing: 0.06em; color: var(--ink); text-decoration: none; }
+    nav { display: flex; gap: 2rem; }
+    nav a { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    nav a:hover { color: var(--ink); }
+
+    main { flex: 1; max-width: 680px; margin: 0 auto; padding: 3rem 2rem 4rem; width: 100%; }
+
+    .back-link { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .back-link:hover { color: var(--ink); }
+
+    /* ── Start screen ─────────────────────────────────────────────── */
+    .quiz-title { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 400; letter-spacing: -0.01em; margin-bottom: 0.3rem; }
+    .quiz-meta { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; }
+
+    .settings-panel { border: 1px solid var(--rule); margin-bottom: 1.25rem; }
+
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-size: 0.8rem; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; margin-right: 1rem; flex-shrink: 0; }
+
+    .toggle-group { display: flex; border: 1px solid var(--rule); flex-shrink: 0; }
+    .toggle {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.9rem;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .toggle:last-child { border-right: none; }
+    .toggle.active { background: var(--ink); color: var(--cream); }
+
+    /* ── Group selection ──────────────────────────────────────────── */
+    .group-section { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--rule); }
+    .group-section:last-child { border-bottom: none; }
+    .group-section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.65rem;
+    }
+    .group-section-label { font-size: 0.78rem; letter-spacing: 0.08em; color: var(--muted); flex: 1; }
+    .mini-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.55rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .mini-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+    .chip-grid { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .chip {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.65rem;
+      border: 1px solid var(--rule);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+      white-space: nowrap;
+    }
+    .chip.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .chip:hover:not(.on) { border-color: var(--muted); color: var(--ink); }
+
+    .pool-info { font-size: 0.78rem; color: var(--muted); font-style: italic; margin-bottom: 1.5rem; }
+
+    .start-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.75rem 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .start-btn:hover { opacity: 0.82; }
+    .start-btn:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── Quiz shared ──────────────────────────────────────────────── */
+    .progress-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; }
+    .progress-label { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .progress-bar { height: 2px; background: var(--rule); margin-bottom: 1.5rem; position: relative; }
+    .progress-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--ink); transition: width 0.3s ease; }
+
+    .question-card {
+      border: 1px solid var(--rule);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+    .question-kana { font-size: clamp(3rem, 14vw, 6rem); font-weight: 400; line-height: 1; margin-bottom: 0.5rem; }
+    .question-reading { font-size: 1.05rem; color: var(--muted); font-style: italic; }
+
+    /* ── Multiple choice ──────────────────────────────────────────── */
+    .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; margin-bottom: 1.5rem; }
+    .answer-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.35;
+      padding: 0.8rem 1rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.12s, background 0.12s, color 0.12s;
+    }
+    .answer-btn:hover:not(:disabled) { border-color: var(--muted); }
+    .answer-btn.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+    .answer-btn.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+
+    /* ── Flashcard ────────────────────────────────────────────────── */
+    .flashcard {
+      border: 1px solid var(--rule);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 1.25rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      user-select: none;
+    }
+    .flashcard.revealed { cursor: default; }
+    .flashcard:not(.revealed):hover { border-color: var(--muted); }
+    .flashcard-answer { font-size: clamp(1.4rem, 4vw, 2.2rem); font-style: italic; }
+    .flashcard-hint { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 1rem; }
+    .flash-actions { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; }
+    .flash-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.4rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .flash-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .flash-btn.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .flash-btn.primary:hover { opacity: 0.82; }
+
+    /* ── Results ──────────────────────────────────────────────────── */
+    .result-score { font-size: clamp(3rem, 12vw, 6rem); font-weight: 400; line-height: 1; margin-bottom: 0.25rem; }
+    .result-label { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; }
+    .missed-section-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    .missed-list { border: 1px solid var(--rule); margin-bottom: 2rem; }
+    .missed-item { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.7rem 1.25rem; border-bottom: 1px solid var(--rule); }
+    .missed-item:last-child { border-bottom: none; }
+    .missed-kana { font-size: 1.6rem; }
+    .missed-answer { font-size: 0.9rem; color: var(--muted); }
+    .result-actions { display: flex; gap: 0.6rem; }
+    .result-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.4rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .result-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .result-btn.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .result-btn.primary:hover { opacity: 0.82; }
+
+    footer { padding: 1rem 2.5rem; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    footer span, footer a { font-size: 0.7rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; text-decoration: none; }
+    footer a:hover { color: var(--ink); }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 680px) {
+      .site-name { display: none; }
+      header { padding: 0 1rem; height: 48px; justify-content: center; }
+      nav { gap: 0.75rem; }
+      nav a { font-size: 0.62rem; }
+      main { padding: 1.5rem 1rem 3rem; }
+      .answer-grid { grid-template-columns: 1fr 1fr; }
+      .toggle { padding: 0.3rem 0.55rem; font-size: 0.72rem; }
+      .flash-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="site-name">A. M. Alcazar</a>
+    <nav>
+      <a href="https://moviemarginalia.com">Writing</a>
+      <a href="/photography.html">Photography</a>
+      <a href="/bio.html">Bio</a>
+      <a href="/cv.html">CV</a>
+      <a href="mailto:hello@amalcazar.com">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ── Start screen ─────────────────────────────────────────── -->
+    <div id="startScreen">
+      <a href="japanese.html" class="back-link">← 日本語</a>
+      <h1 class="quiz-title">Kana Quiz</h1>
+      <p class="quiz-meta">かな · Script Practice</p>
+
+      <div class="settings-panel">
+
+        <!-- Script -->
+        <div class="setting-row">
+          <span class="setting-label">Script</span>
+          <div class="toggle-group">
+            <button class="toggle active" id="btnHira">Hiragana</button>
+            <button class="toggle" id="btnKata">Katakana</button>
+            <button class="toggle" id="btnKanji">Kanji</button>
+            <button class="toggle" id="btnAll">All</button>
+          </div>
+        </div>
+
+        <!-- Group selection (rendered by JS) -->
+        <div id="groupPanel"></div>
+
+        <!-- Mode -->
+        <div class="setting-row">
+          <span class="setting-label">Mode</span>
+          <div class="toggle-group">
+            <button class="toggle active" id="mcBtn">Multiple choice</button>
+            <button class="toggle" id="flashBtn">Flashcard</button>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="pool-info" id="poolInfo"></p>
+      <button class="start-btn" id="startBtn">Start quiz →</button>
+    </div>
+
+    <!-- ── Multiple choice screen ───────────────────────────────── -->
+    <div id="quizScreenMC" hidden>
+      <div class="progress-row">
+        <span class="progress-label" id="mcProgress"></span>
+        <span class="progress-label" id="mcScore"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="mcFill"></div></div>
+      <div class="question-card">
+        <div class="question-kana" id="mcKana"></div>
+        <div class="question-reading" id="mcReading"></div>
+      </div>
+      <div class="answer-grid" id="mcOptions"></div>
+    </div>
+
+    <!-- ── Flashcard screen ──────────────────────────────────────── -->
+    <div id="quizScreenFlash" hidden>
+      <div class="progress-row">
+        <span class="progress-label" id="flashProgress"></span>
+        <span class="progress-label" id="flashScore"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="flashFill"></div></div>
+      <div class="flashcard" id="flashCard">
+        <div class="question-kana" id="flashKana"></div>
+        <div class="question-reading" id="flashReading"></div>
+        <div class="flashcard-answer" id="flashAnswer" hidden></div>
+        <div class="flashcard-hint" id="flashHint">tap to reveal</div>
+      </div>
+      <div class="flash-actions" id="flashActions" hidden>
+        <button class="flash-btn primary" id="gotItBtn">Got it ✓</button>
+        <button class="flash-btn" id="tryAgainBtn">Try again ↺</button>
+      </div>
+    </div>
+
+    <!-- ── Result screen ─────────────────────────────────────────── -->
+    <div id="resultScreen" hidden>
+      <div class="result-score" id="resultScore"></div>
+      <p class="result-label" id="resultLabel"></p>
+      <p class="missed-section-label" id="missedLabel"></p>
+      <div class="missed-list" id="missedList"></div>
+      <div class="result-actions">
+        <button class="result-btn primary" id="retryBtn">Try again</button>
+        <button class="result-btn" id="newSelBtn">New selection</button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span>© A. M. Alcazar</span>
+    <a href="mailto:hello@moviemarginalia.com">2026</a>
+  </footer>
+
+  <script>
+  // ── Character data ───────────────────────────────────────────────────────────
+  // type: 'kana'  → answer = romaji, no hint shown on question card
+  // type: 'kanji' → answer = English meaning, romaji shown as reading hint
+
+  const GROUPS = {
+    hiragana: [
+      { id: 'h-a',   name: 'あ行',  chars: [
+        { kana:'あ', romaji:'a',   answer:'a',   type:'kana' },
+        { kana:'い', romaji:'i',   answer:'i',   type:'kana' },
+        { kana:'う', romaji:'u',   answer:'u',   type:'kana' },
+        { kana:'え', romaji:'e',   answer:'e',   type:'kana' },
+        { kana:'お', romaji:'o',   answer:'o',   type:'kana' },
+      ]},
+      { id: 'h-ka',  name: 'か行',  chars: [
+        { kana:'か', romaji:'ka',  answer:'ka',  type:'kana' },
+        { kana:'き', romaji:'ki',  answer:'ki',  type:'kana' },
+        { kana:'く', romaji:'ku',  answer:'ku',  type:'kana' },
+        { kana:'け', romaji:'ke',  answer:'ke',  type:'kana' },
+        { kana:'こ', romaji:'ko',  answer:'ko',  type:'kana' },
+      ]},
+      { id: 'h-sa',  name: 'さ行',  chars: [
+        { kana:'さ', romaji:'sa',  answer:'sa',  type:'kana' },
+        { kana:'し', romaji:'shi', answer:'shi', type:'kana' },
+        { kana:'す', romaji:'su',  answer:'su',  type:'kana' },
+        { kana:'せ', romaji:'se',  answer:'se',  type:'kana' },
+        { kana:'そ', romaji:'so',  answer:'so',  type:'kana' },
+      ]},
+      { id: 'h-ta',  name: 'た行',  chars: [
+        { kana:'た', romaji:'ta',  answer:'ta',  type:'kana' },
+        { kana:'ち', romaji:'chi', answer:'chi', type:'kana' },
+        { kana:'つ', romaji:'tsu', answer:'tsu', type:'kana' },
+        { kana:'て', romaji:'te',  answer:'te',  type:'kana' },
+        { kana:'と', romaji:'to',  answer:'to',  type:'kana' },
+      ]},
+      { id: 'h-na',  name: 'な行',  chars: [
+        { kana:'な', romaji:'na',  answer:'na',  type:'kana' },
+        { kana:'に', romaji:'ni',  answer:'ni',  type:'kana' },
+        { kana:'ぬ', romaji:'nu',  answer:'nu',  type:'kana' },
+        { kana:'ね', romaji:'ne',  answer:'ne',  type:'kana' },
+        { kana:'の', romaji:'no',  answer:'no',  type:'kana' },
+      ]},
+      { id: 'h-ha',  name: 'は行',  chars: [
+        { kana:'は', romaji:'ha',  answer:'ha',  type:'kana' },
+        { kana:'ひ', romaji:'hi',  answer:'hi',  type:'kana' },
+        { kana:'ふ', romaji:'fu',  answer:'fu',  type:'kana' },
+        { kana:'へ', romaji:'he',  answer:'he',  type:'kana' },
+        { kana:'ほ', romaji:'ho',  answer:'ho',  type:'kana' },
+      ]},
+      { id: 'h-ma',  name: 'ま行',  chars: [
+        { kana:'ま', romaji:'ma',  answer:'ma',  type:'kana' },
+        { kana:'み', romaji:'mi',  answer:'mi',  type:'kana' },
+        { kana:'む', romaji:'mu',  answer:'mu',  type:'kana' },
+        { kana:'め', romaji:'me',  answer:'me',  type:'kana' },
+        { kana:'も', romaji:'mo',  answer:'mo',  type:'kana' },
+      ]},
+      { id: 'h-ya',  name: 'や行',  chars: [
+        { kana:'や', romaji:'ya',  answer:'ya',  type:'kana' },
+        { kana:'ゆ', romaji:'yu',  answer:'yu',  type:'kana' },
+        { kana:'よ', romaji:'yo',  answer:'yo',  type:'kana' },
+      ]},
+      { id: 'h-ra',  name: 'ら行',  chars: [
+        { kana:'ら', romaji:'ra',  answer:'ra',  type:'kana' },
+        { kana:'り', romaji:'ri',  answer:'ri',  type:'kana' },
+        { kana:'る', romaji:'ru',  answer:'ru',  type:'kana' },
+        { kana:'れ', romaji:'re',  answer:'re',  type:'kana' },
+        { kana:'ろ', romaji:'ro',  answer:'ro',  type:'kana' },
+      ]},
+      { id: 'h-wa',  name: 'わ行 · ん', chars: [
+        { kana:'わ', romaji:'wa',  answer:'wa',  type:'kana' },
+        { kana:'を', romaji:'wo',  answer:'wo',  type:'kana' },
+        { kana:'ん', romaji:'n',   answer:'n',   type:'kana' },
+      ]},
+      { id: 'h-ga',  name: 'が行',  chars: [
+        { kana:'が', romaji:'ga',  answer:'ga',  type:'kana' },
+        { kana:'ぎ', romaji:'gi',  answer:'gi',  type:'kana' },
+        { kana:'ぐ', romaji:'gu',  answer:'gu',  type:'kana' },
+        { kana:'げ', romaji:'ge',  answer:'ge',  type:'kana' },
+        { kana:'ご', romaji:'go',  answer:'go',  type:'kana' },
+      ]},
+      { id: 'h-za',  name: 'ざ行',  chars: [
+        { kana:'ざ', romaji:'za',  answer:'za',  type:'kana' },
+        { kana:'じ', romaji:'ji',  answer:'ji',  type:'kana' },
+        { kana:'ず', romaji:'zu',  answer:'zu',  type:'kana' },
+        { kana:'ぜ', romaji:'ze',  answer:'ze',  type:'kana' },
+        { kana:'ぞ', romaji:'zo',  answer:'zo',  type:'kana' },
+      ]},
+      { id: 'h-da',  name: 'だ行',  chars: [
+        { kana:'だ', romaji:'da',  answer:'da',  type:'kana' },
+        { kana:'で', romaji:'de',  answer:'de',  type:'kana' },
+        { kana:'ど', romaji:'do',  answer:'do',  type:'kana' },
+      ]},
+      { id: 'h-ba',  name: 'ば行',  chars: [
+        { kana:'ば', romaji:'ba',  answer:'ba',  type:'kana' },
+        { kana:'び', romaji:'bi',  answer:'bi',  type:'kana' },
+        { kana:'ぶ', romaji:'bu',  answer:'bu',  type:'kana' },
+        { kana:'べ', romaji:'be',  answer:'be',  type:'kana' },
+        { kana:'ぼ', romaji:'bo',  answer:'bo',  type:'kana' },
+      ]},
+      { id: 'h-pa',  name: 'ぱ行',  chars: [
+        { kana:'ぱ', romaji:'pa',  answer:'pa',  type:'kana' },
+        { kana:'ぴ', romaji:'pi',  answer:'pi',  type:'kana' },
+        { kana:'ぷ', romaji:'pu',  answer:'pu',  type:'kana' },
+        { kana:'ぺ', romaji:'pe',  answer:'pe',  type:'kana' },
+        { kana:'ぽ', romaji:'po',  answer:'po',  type:'kana' },
+      ]},
+    ],
+
+    katakana: [
+      { id: 'k-a',   name: 'ア行',  chars: [
+        { kana:'ア', romaji:'a',   answer:'a',   type:'kana' },
+        { kana:'イ', romaji:'i',   answer:'i',   type:'kana' },
+        { kana:'ウ', romaji:'u',   answer:'u',   type:'kana' },
+        { kana:'エ', romaji:'e',   answer:'e',   type:'kana' },
+        { kana:'オ', romaji:'o',   answer:'o',   type:'kana' },
+      ]},
+      { id: 'k-ka',  name: 'カ行',  chars: [
+        { kana:'カ', romaji:'ka',  answer:'ka',  type:'kana' },
+        { kana:'キ', romaji:'ki',  answer:'ki',  type:'kana' },
+        { kana:'ク', romaji:'ku',  answer:'ku',  type:'kana' },
+        { kana:'ケ', romaji:'ke',  answer:'ke',  type:'kana' },
+        { kana:'コ', romaji:'ko',  answer:'ko',  type:'kana' },
+      ]},
+      { id: 'k-sa',  name: 'サ行',  chars: [
+        { kana:'サ', romaji:'sa',  answer:'sa',  type:'kana' },
+        { kana:'シ', romaji:'shi', answer:'shi', type:'kana' },
+        { kana:'ス', romaji:'su',  answer:'su',  type:'kana' },
+        { kana:'セ', romaji:'se',  answer:'se',  type:'kana' },
+        { kana:'ソ', romaji:'so',  answer:'so',  type:'kana' },
+      ]},
+      { id: 'k-ta',  name: 'タ行',  chars: [
+        { kana:'タ', romaji:'ta',  answer:'ta',  type:'kana' },
+        { kana:'チ', romaji:'chi', answer:'chi', type:'kana' },
+        { kana:'ツ', romaji:'tsu', answer:'tsu', type:'kana' },
+        { kana:'テ', romaji:'te',  answer:'te',  type:'kana' },
+        { kana:'ト', romaji:'to',  answer:'to',  type:'kana' },
+      ]},
+      { id: 'k-na',  name: 'ナ行',  chars: [
+        { kana:'ナ', romaji:'na',  answer:'na',  type:'kana' },
+        { kana:'ニ', romaji:'ni',  answer:'ni',  type:'kana' },
+        { kana:'ヌ', romaji:'nu',  answer:'nu',  type:'kana' },
+        { kana:'ネ', romaji:'ne',  answer:'ne',  type:'kana' },
+        { kana:'ノ', romaji:'no',  answer:'no',  type:'kana' },
+      ]},
+      { id: 'k-ha',  name: 'ハ行',  chars: [
+        { kana:'ハ', romaji:'ha',  answer:'ha',  type:'kana' },
+        { kana:'ヒ', romaji:'hi',  answer:'hi',  type:'kana' },
+        { kana:'フ', romaji:'fu',  answer:'fu',  type:'kana' },
+        { kana:'ヘ', romaji:'he',  answer:'he',  type:'kana' },
+        { kana:'ホ', romaji:'ho',  answer:'ho',  type:'kana' },
+      ]},
+      { id: 'k-ma',  name: 'マ行',  chars: [
+        { kana:'マ', romaji:'ma',  answer:'ma',  type:'kana' },
+        { kana:'ミ', romaji:'mi',  answer:'mi',  type:'kana' },
+        { kana:'ム', romaji:'mu',  answer:'mu',  type:'kana' },
+        { kana:'メ', romaji:'me',  answer:'me',  type:'kana' },
+        { kana:'モ', romaji:'mo',  answer:'mo',  type:'kana' },
+      ]},
+      { id: 'k-ya',  name: 'ヤ行',  chars: [
+        { kana:'ヤ', romaji:'ya',  answer:'ya',  type:'kana' },
+        { kana:'ユ', romaji:'yu',  answer:'yu',  type:'kana' },
+        { kana:'ヨ', romaji:'yo',  answer:'yo',  type:'kana' },
+      ]},
+      { id: 'k-ra',  name: 'ラ行',  chars: [
+        { kana:'ラ', romaji:'ra',  answer:'ra',  type:'kana' },
+        { kana:'リ', romaji:'ri',  answer:'ri',  type:'kana' },
+        { kana:'ル', romaji:'ru',  answer:'ru',  type:'kana' },
+        { kana:'レ', romaji:'re',  answer:'re',  type:'kana' },
+        { kana:'ロ', romaji:'ro',  answer:'ro',  type:'kana' },
+      ]},
+      { id: 'k-wa',  name: 'ワ行 · ン', chars: [
+        { kana:'ワ', romaji:'wa',  answer:'wa',  type:'kana' },
+        { kana:'ヲ', romaji:'wo',  answer:'wo',  type:'kana' },
+        { kana:'ン', romaji:'n',   answer:'n',   type:'kana' },
+      ]},
+      { id: 'k-ga',  name: 'ガ行',  chars: [
+        { kana:'ガ', romaji:'ga',  answer:'ga',  type:'kana' },
+        { kana:'ギ', romaji:'gi',  answer:'gi',  type:'kana' },
+        { kana:'グ', romaji:'gu',  answer:'gu',  type:'kana' },
+        { kana:'ゲ', romaji:'ge',  answer:'ge',  type:'kana' },
+        { kana:'ゴ', romaji:'go',  answer:'go',  type:'kana' },
+      ]},
+      { id: 'k-za',  name: 'ザ行',  chars: [
+        { kana:'ザ', romaji:'za',  answer:'za',  type:'kana' },
+        { kana:'ジ', romaji:'ji',  answer:'ji',  type:'kana' },
+        { kana:'ズ', romaji:'zu',  answer:'zu',  type:'kana' },
+        { kana:'ゼ', romaji:'ze',  answer:'ze',  type:'kana' },
+        { kana:'ゾ', romaji:'zo',  answer:'zo',  type:'kana' },
+      ]},
+      { id: 'k-da',  name: 'ダ行',  chars: [
+        { kana:'ダ', romaji:'da',  answer:'da',  type:'kana' },
+        { kana:'デ', romaji:'de',  answer:'de',  type:'kana' },
+        { kana:'ド', romaji:'do',  answer:'do',  type:'kana' },
+      ]},
+      { id: 'k-ba',  name: 'バ行',  chars: [
+        { kana:'バ', romaji:'ba',  answer:'ba',  type:'kana' },
+        { kana:'ビ', romaji:'bi',  answer:'bi',  type:'kana' },
+        { kana:'ブ', romaji:'bu',  answer:'bu',  type:'kana' },
+        { kana:'ベ', romaji:'be',  answer:'be',  type:'kana' },
+        { kana:'ボ', romaji:'bo',  answer:'bo',  type:'kana' },
+      ]},
+      { id: 'k-pa',  name: 'パ行',  chars: [
+        { kana:'パ', romaji:'pa',  answer:'pa',  type:'kana' },
+        { kana:'ピ', romaji:'pi',  answer:'pi',  type:'kana' },
+        { kana:'プ', romaji:'pu',  answer:'pu',  type:'kana' },
+        { kana:'ペ', romaji:'pe',  answer:'pe',  type:'kana' },
+        { kana:'ポ', romaji:'po',  answer:'po',  type:'kana' },
+      ]},
+    ],
+
+    kanji: [
+      { id: 'j-num',  name: 'Numbers', chars: [
+        { kana:'一', romaji:'ichi',    answer:'One',         type:'kanji' },
+        { kana:'二', romaji:'ni',      answer:'Two',         type:'kanji' },
+        { kana:'三', romaji:'san',     answer:'Three',       type:'kanji' },
+        { kana:'四', romaji:'shi/yon', answer:'Four',        type:'kanji' },
+        { kana:'五', romaji:'go',      answer:'Five',        type:'kanji' },
+        { kana:'六', romaji:'roku',    answer:'Six',         type:'kanji' },
+        { kana:'七', romaji:'shichi',  answer:'Seven',       type:'kanji' },
+        { kana:'八', romaji:'hachi',   answer:'Eight',       type:'kanji' },
+        { kana:'九', romaji:'kyuu',    answer:'Nine',        type:'kanji' },
+        { kana:'十', romaji:'juu',     answer:'Ten',         type:'kanji' },
+        { kana:'百', romaji:'hyaku',   answer:'Hundred',     type:'kanji' },
+        { kana:'千', romaji:'sen',     answer:'Thousand',    type:'kanji' },
+        { kana:'万', romaji:'man',     answer:'Ten thousand',type:'kanji' },
+      ]},
+      { id: 'j-time', name: 'Time', chars: [
+        { kana:'日', romaji:'nichi/hi', answer:'Day / Sun',  type:'kanji' },
+        { kana:'月', romaji:'tsuki',    answer:'Month / Moon',type:'kanji' },
+        { kana:'年', romaji:'nen/toshi',answer:'Year',       type:'kanji' },
+        { kana:'時', romaji:'ji',       answer:'Hour / Time', type:'kanji' },
+        { kana:'分', romaji:'fun/pun',  answer:'Minute',     type:'kanji' },
+        { kana:'週', romaji:'shuu',     answer:'Week',       type:'kanji' },
+        { kana:'今', romaji:'ima',      answer:'Now',        type:'kanji' },
+        { kana:'朝', romaji:'asa',      answer:'Morning',    type:'kanji' },
+        { kana:'昼', romaji:'hiru',     answer:'Noon',       type:'kanji' },
+        { kana:'夜', romaji:'yoru',     answer:'Night',      type:'kanji' },
+      ]},
+      { id: 'j-ppl',  name: 'People', chars: [
+        { kana:'人', romaji:'hito',    answer:'Person',      type:'kanji' },
+        { kana:'男', romaji:'otoko',   answer:'Man',         type:'kanji' },
+        { kana:'女', romaji:'onna',    answer:'Woman',       type:'kanji' },
+        { kana:'子', romaji:'ko',      answer:'Child',       type:'kanji' },
+        { kana:'友', romaji:'tomo',    answer:'Friend',      type:'kanji' },
+        { kana:'父', romaji:'chichi',  answer:'Father',      type:'kanji' },
+        { kana:'母', romaji:'haha',    answer:'Mother',      type:'kanji' },
+        { kana:'先', romaji:'sen',     answer:'Previous / Before',type:'kanji' },
+        { kana:'生', romaji:'sei',     answer:'Life / Student',   type:'kanji' },
+      ]},
+      { id: 'j-nat',  name: 'Nature', chars: [
+        { kana:'山', romaji:'yama',    answer:'Mountain',   type:'kanji' },
+        { kana:'川', romaji:'kawa',    answer:'River',      type:'kanji' },
+        { kana:'木', romaji:'ki',      answer:'Tree',       type:'kanji' },
+        { kana:'水', romaji:'mizu',    answer:'Water',      type:'kanji' },
+        { kana:'火', romaji:'hi',      answer:'Fire',       type:'kanji' },
+        { kana:'土', romaji:'tsuchi',  answer:'Earth / Soil',type:'kanji' },
+        { kana:'空', romaji:'sora',    answer:'Sky',        type:'kanji' },
+        { kana:'花', romaji:'hana',    answer:'Flower',     type:'kanji' },
+        { kana:'雨', romaji:'ame',     answer:'Rain',       type:'kanji' },
+      ]},
+      { id: 'j-dir',  name: 'Direction', chars: [
+        { kana:'上', romaji:'ue',      answer:'Above / Up',  type:'kanji' },
+        { kana:'下', romaji:'shita',   answer:'Below / Down',type:'kanji' },
+        { kana:'左', romaji:'hidari',  answer:'Left',        type:'kanji' },
+        { kana:'右', romaji:'migi',    answer:'Right',       type:'kanji' },
+        { kana:'中', romaji:'naka',    answer:'Inside / Middle',type:'kanji' },
+        { kana:'外', romaji:'soto',    answer:'Outside',     type:'kanji' },
+        { kana:'前', romaji:'mae',     answer:'Front / Before',type:'kanji' },
+        { kana:'後', romaji:'ato',     answer:'After / Behind',type:'kanji' },
+        { kana:'北', romaji:'kita',    answer:'North',       type:'kanji' },
+        { kana:'南', romaji:'minami',  answer:'South',       type:'kanji' },
+        { kana:'東', romaji:'higashi', answer:'East',        type:'kanji' },
+        { kana:'西', romaji:'nishi',   answer:'West',        type:'kanji' },
+      ]},
+      { id: 'j-desc', name: 'Descriptors', chars: [
+        { kana:'大', romaji:'dai/oo',  answer:'Big / Large',  type:'kanji' },
+        { kana:'小', romaji:'shou/ko', answer:'Small / Little',type:'kanji' },
+        { kana:'高', romaji:'taka',    answer:'Tall / Expensive',type:'kanji' },
+        { kana:'安', romaji:'yasu',    answer:'Cheap / Safe', type:'kanji' },
+        { kana:'新', romaji:'shin/atara',answer:'New',        type:'kanji' },
+        { kana:'古', romaji:'furu',    answer:'Old',          type:'kanji' },
+        { kana:'多', romaji:'oo',      answer:'Many',         type:'kanji' },
+        { kana:'少', romaji:'suku',    answer:'Few',          type:'kanji' },
+        { kana:'長', romaji:'naga',    answer:'Long',         type:'kanji' },
+        { kana:'白', romaji:'shiro',   answer:'White',        type:'kanji' },
+        { kana:'黒', romaji:'kuro',    answer:'Black',        type:'kanji' },
+        { kana:'赤', romaji:'aka',     answer:'Red',          type:'kanji' },
+        { kana:'青', romaji:'ao',      answer:'Blue',         type:'kanji' },
+      ]},
+    ],
+  };
+
+  // Flat arrays used for wrong-answer generation
+  const ALL_KANA   = [...GROUPS.hiragana, ...GROUPS.katakana].flatMap(g => g.chars);
+  const ALL_KANJI  = GROUPS.kanji.flatMap(g => g.chars);
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  const Q_COUNT = 10;
+  let activeScript = 'hiragana';        // 'hiragana' | 'katakana' | 'kanji' | 'all'
+  let selectedGroups = new Set();       // group ids
+  let mode = 'mc';
+  let questions = [], currentQ = 0, score = 0, missed = [], flashRevealed = false;
+
+  // ── Script buttons ─────────────────────────────────────────────────────────
+  const scriptBtns = {
+    hiragana: document.getElementById('btnHira'),
+    katakana: document.getElementById('btnKata'),
+    kanji:    document.getElementById('btnKanji'),
+    all:      document.getElementById('btnAll'),
+  };
+
+  Object.entries(scriptBtns).forEach(([key, btn]) => {
+    btn.addEventListener('click', () => setScript(key));
+  });
+
+  function setScript(s) {
+    activeScript = s;
+    Object.entries(scriptBtns).forEach(([k, b]) => b.classList.toggle('active', k === s));
+    renderGroupPanel();
+    updatePoolInfo();
+  }
+
+  // ── Group panel ────────────────────────────────────────────────────────────
+  function getActiveGroupDefs() {
+    if (activeScript === 'all') {
+      return [
+        { label: 'Hiragana', groups: GROUPS.hiragana },
+        { label: 'Katakana', groups: GROUPS.katakana },
+        { label: 'Kanji',    groups: GROUPS.kanji    },
+      ];
+    }
+    return [{ label: null, groups: GROUPS[activeScript] }];
+  }
+
+  function renderGroupPanel() {
+    const panel = document.getElementById('groupPanel');
+    panel.innerHTML = '';
+
+    getActiveGroupDefs().forEach(({ label, groups }) => {
+      const section = document.createElement('div');
+      section.className = 'group-section';
+
+      const header = document.createElement('div');
+      header.className = 'group-section-header';
+      if (label) {
+        const lbl = document.createElement('span');
+        lbl.className = 'group-section-label';
+        lbl.textContent = label;
+        header.appendChild(lbl);
+      } else {
+        header.appendChild(Object.assign(document.createElement('span'), { className: 'group-section-label', textContent: 'Groups' }));
+      }
+
+      const allBtn = document.createElement('button');
+      allBtn.className = 'mini-btn';
+      allBtn.textContent = 'All';
+      allBtn.addEventListener('click', () => {
+        groups.forEach(g => selectedGroups.add(g.id));
+        renderGroupPanel();
+        updatePoolInfo();
+      });
+
+      const noneBtn = document.createElement('button');
+      noneBtn.className = 'mini-btn';
+      noneBtn.textContent = 'None';
+      noneBtn.addEventListener('click', () => {
+        groups.forEach(g => selectedGroups.delete(g.id));
+        renderGroupPanel();
+        updatePoolInfo();
+      });
+
+      header.appendChild(allBtn);
+      header.appendChild(noneBtn);
+      section.appendChild(header);
+
+      const grid = document.createElement('div');
+      grid.className = 'chip-grid';
+
+      groups.forEach(g => {
+        const chip = document.createElement('button');
+        chip.className = 'chip' + (selectedGroups.has(g.id) ? ' on' : '');
+        chip.textContent = g.name;
+        chip.addEventListener('click', () => {
+          selectedGroups.has(g.id) ? selectedGroups.delete(g.id) : selectedGroups.add(g.id);
+          chip.classList.toggle('on');
+          updatePoolInfo();
+        });
+        grid.appendChild(chip);
+      });
+
+      section.appendChild(grid);
+      panel.appendChild(section);
+    });
+  }
+
+  // ── Pool ───────────────────────────────────────────────────────────────────
+  function getPool() {
+    const allGroups = [...GROUPS.hiragana, ...GROUPS.katakana, ...GROUPS.kanji];
+    return allGroups
+      .filter(g => selectedGroups.has(g.id))
+      .flatMap(g => g.chars);
+  }
+
+  function updatePoolInfo() {
+    const pool = getPool();
+    const q = Math.min(Q_COUNT, pool.length);
+    const info = document.getElementById('poolInfo');
+    if (pool.length === 0) {
+      info.textContent = 'Select at least one group to start.';
+    } else {
+      info.textContent = `${q} question${q !== 1 ? 's' : ''} · from ${pool.length} character${pool.length !== 1 ? 's' : ''}`;
+    }
+    document.getElementById('startBtn').disabled = pool.length < 2;
+  }
+
+  // ── Init: select all hiragana basic groups by default ─────────────────────
+  GROUPS.hiragana.slice(0, 10).forEach(g => selectedGroups.add(g.id)); // あ行 through わ行
+  renderGroupPanel();
+  updatePoolInfo();
+
+  // ── Mode toggles ───────────────────────────────────────────────────────────
+  document.getElementById('mcBtn').addEventListener('click', () => setMode('mc'));
+  document.getElementById('flashBtn').addEventListener('click', () => setMode('flash'));
+
+  function setMode(m) {
+    mode = m;
+    document.getElementById('mcBtn').classList.toggle('active', m === 'mc');
+    document.getElementById('flashBtn').classList.toggle('active', m === 'flash');
+  }
+
+  // ── Utilities ──────────────────────────────────────────────────────────────
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function showOnly(id) {
+    ['startScreen','quizScreenMC','quizScreenFlash','resultScreen'].forEach(s => {
+      document.getElementById(s).hidden = s !== id;
+    });
+  }
+
+  // Wrong answers come from the appropriate flat pool (kana or kanji)
+  // so there are always enough distractors regardless of which groups are selected.
+  function getWrongAnswers(q, count) {
+    const pool = q.type === 'kanji' ? ALL_KANJI : ALL_KANA;
+    const others = shuffle(pool.filter(c => c.answer !== q.answer));
+    return others.slice(0, count);
+  }
+
+  // ── Start / restart ────────────────────────────────────────────────────────
+  document.getElementById('startBtn').addEventListener('click', startQuiz);
+  document.getElementById('retryBtn').addEventListener('click', startQuiz);
+  document.getElementById('newSelBtn').addEventListener('click', () => showOnly('startScreen'));
+
+  function startQuiz() {
+    const pool = getPool();
+    questions = shuffle(pool).slice(0, Math.min(Q_COUNT, pool.length));
+    currentQ = 0; score = 0; missed = [];
+    if (mode === 'mc') { showOnly('quizScreenMC'); renderMC(); }
+    else               { showOnly('quizScreenFlash'); renderFlash(); }
+  }
+
+  // ── Multiple choice ────────────────────────────────────────────────────────
+  function renderMC() {
+    const q = questions[currentQ];
+    const total = questions.length;
+
+    document.getElementById('mcProgress').textContent = `${currentQ + 1} / ${total}`;
+    document.getElementById('mcScore').textContent = `${score} correct`;
+    document.getElementById('mcFill').style.width = `${(currentQ / total) * 100}%`;
+    document.getElementById('mcKana').textContent = q.kana;
+
+    // Show romaji reading on question card only for kanji (it's not the answer)
+    const reading = document.getElementById('mcReading');
+    reading.textContent = q.type === 'kanji' ? q.romaji : '';
+    reading.hidden = q.type !== 'kanji';
+
+    const wrongs = getWrongAnswers(q, 3);
+    const options = shuffle([q, ...wrongs]);
+
+    const grid = document.getElementById('mcOptions');
+    grid.innerHTML = '';
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'answer-btn';
+      btn.textContent = opt.answer;
+      btn.addEventListener('click', () => handleMC(btn, opt.answer === q.answer, q));
+      grid.appendChild(btn);
+    });
+  }
+
+  function handleMC(clicked, correct, q) {
+    document.querySelectorAll('.answer-btn').forEach(b => {
+      b.disabled = true;
+      if (b.textContent === q.answer) b.classList.add('correct');
+    });
+    if (correct) { score++; } else { clicked.classList.add('wrong'); missed.push(q); }
+    document.getElementById('mcScore').textContent = `${score} correct`;
+    setTimeout(() => { currentQ++; currentQ < questions.length ? renderMC() : showResults(); }, 1200);
+  }
+
+  // ── Flashcard ──────────────────────────────────────────────────────────────
+  function renderFlash() {
+    const q = questions[currentQ];
+    const total = questions.length;
+    flashRevealed = false;
+
+    document.getElementById('flashProgress').textContent = `${currentQ + 1} / ${total}`;
+    document.getElementById('flashScore').textContent = `${score} correct`;
+    document.getElementById('flashFill').style.width = `${(currentQ / total) * 100}%`;
+    document.getElementById('flashKana').textContent = q.kana;
+
+    const reading = document.getElementById('flashReading');
+    reading.textContent = q.type === 'kanji' ? q.romaji : '';
+    reading.hidden = q.type !== 'kanji';
+
+    document.getElementById('flashAnswer').textContent = q.answer;
+    document.getElementById('flashAnswer').hidden = true;
+    document.getElementById('flashHint').hidden = false;
+    document.getElementById('flashActions').hidden = true;
+    document.getElementById('flashCard').classList.remove('revealed');
+  }
+
+  document.getElementById('flashCard').addEventListener('click', () => {
+    if (flashRevealed) return;
+    flashRevealed = true;
+    document.getElementById('flashAnswer').hidden = false;
+    document.getElementById('flashHint').hidden = true;
+    document.getElementById('flashActions').hidden = false;
+    document.getElementById('flashCard').classList.add('revealed');
+  });
+
+  document.getElementById('gotItBtn').addEventListener('click', () => rateFlash(true));
+  document.getElementById('tryAgainBtn').addEventListener('click', () => rateFlash(false));
+
+  function rateFlash(gotIt) {
+    if (gotIt) score++;
+    else missed.push(questions[currentQ]);
+    document.getElementById('flashScore').textContent = `${score} correct`;
+    currentQ++;
+    currentQ < questions.length ? renderFlash() : showResults();
+  }
+
+  // ── Results ────────────────────────────────────────────────────────────────
+  function showResults() {
+    showOnly('resultScreen');
+    const total = questions.length;
+    document.getElementById('resultScore').textContent = `${score} / ${total}`;
+    document.getElementById('resultLabel').textContent =
+      score === total      ? 'Perfect!' :
+      score >= total * 0.8 ? 'Great work.' :
+      score >= total * 0.6 ? 'Good effort.' : 'Keep practicing.';
+
+    const missedList  = document.getElementById('missedList');
+    const missedLabel = document.getElementById('missedLabel');
+    missedList.innerHTML = '';
+
+    if (missed.length === 0) {
+      missedList.hidden = true; missedLabel.hidden = true;
+    } else {
+      missedList.hidden = false; missedLabel.hidden = false;
+      missedLabel.textContent = `Missed — ${missed.length} character${missed.length !== 1 ? 's' : ''}`;
+      missed.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'missed-item';
+        row.innerHTML = `
+          <span class="missed-kana">${item.kana}</span>
+          <span class="missed-answer">${item.romaji}</span>
+          ${item.type === 'kanji' ? `<span class="missed-answer" style="margin-left:auto">${item.answer}</span>` : ''}
+        `;
+        missedList.appendChild(row);
+      });
+    }
+  }
+  </script>
+</body>
+</html>
