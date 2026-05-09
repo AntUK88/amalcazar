@@ -8,23 +8,346 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --cream: #fff7ed; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
-    html, body { background: var(--cream); color: var(--ink); font-family: 'EB Garamond', Georgia, serif; min-height: 100vh; display: flex; flex-direction: column; }
-    header { padding: 0 2.5rem; height: 56px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--rule); flex-shrink: 0; }
-    .site-name { font-weight: 400; font-size: 1rem; letter-spacing: 0.06em; color: var(--ink); text-decoration: none; }
+    :root {
+      --cream: #fff7ed; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8;
+      --green: #2a5c2a; --green-bg: #eef4ee;
+      --red: #7a2828; --red-bg: #f4eeee;
+    }
+
+    html, body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 0 2.5rem;
+      height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+    .site-name {
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      text-decoration: none;
+    }
     nav { display: flex; gap: 2rem; }
-    nav a { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
     nav a:hover { color: var(--ink); }
-    main { flex: 1; max-width: 660px; margin: 0 auto; padding: 3rem 2rem 4rem; width: 100%; }
-    .back-link { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+
+    main {
+      flex: 1;
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 3rem 2rem 4rem;
+      width: 100%;
+    }
+
+    .back-link {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 2rem;
+      transition: color 0.2s;
+    }
     .back-link:hover { color: var(--ink); }
-    .quiz-title { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 400; letter-spacing: -0.01em; margin-bottom: 0.3rem; }
-    .quiz-meta { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; }
-    .placeholder { border: 1px solid var(--rule); padding: 2.5rem 2rem; color: var(--muted); font-style: italic; font-size: 1.05rem; }
-    footer { padding: 1rem 2.5rem; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-    footer span, footer a { font-size: 0.7rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; text-decoration: none; }
+
+    /* ── Start screen ─────────────────────────────────────────────── */
+    .quiz-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.3rem;
+    }
+    .quiz-meta {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .settings-panel {
+      border: 1px solid var(--rule);
+      margin-bottom: 1.25rem;
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    .toggle-group { display: flex; border: 1px solid var(--rule); }
+    .toggle {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.9rem;
+      background: transparent;
+      border: none;
+      border-right: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .toggle:last-child { border-right: none; }
+    .toggle.active { background: var(--ink); color: var(--cream); }
+
+    .lesson-select {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.85rem;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--rule);
+      color: var(--ink);
+      padding: 0.1rem 0.3rem;
+      cursor: pointer;
+      outline: none;
+    }
+    .lesson-select:focus { border-bottom-color: var(--ink); }
+
+    .pool-info {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    .start-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.75rem 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .start-btn:hover { opacity: 0.82; }
+    .start-btn:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── Quiz shared ──────────────────────────────────────────────── */
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .progress-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .progress-bar {
+      height: 2px;
+      background: var(--rule);
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .progress-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: var(--ink);
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      border: 1px solid var(--rule);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+    .question-jp {
+      font-size: clamp(2.2rem, 8vw, 4rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .question-romaji {
+      font-size: 1.05rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── Multiple choice ──────────────────────────────────────────── */
+    .answer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+      margin-bottom: 1.5rem;
+    }
+    .answer-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.35;
+      padding: 0.8rem 1rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.12s, background 0.12s, color 0.12s;
+    }
+    .answer-btn:hover:not(:disabled) { border-color: var(--muted); }
+    .answer-btn.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+    .answer-btn.wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+
+    /* ── Flashcard ────────────────────────────────────────────────── */
+    .flashcard {
+      border: 1px solid var(--rule);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin-bottom: 1.25rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      user-select: none;
+    }
+    .flashcard.revealed { cursor: default; }
+    .flashcard:not(.revealed):hover { border-color: var(--muted); }
+    .flashcard-en { font-size: clamp(1.4rem, 4vw, 2.2rem); font-style: italic; }
+    .flashcard-hint {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+    .flash-actions {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+    .flash-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.4rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .flash-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .flash-btn.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .flash-btn.primary:hover { opacity: 0.82; }
+
+    /* ── Results ──────────────────────────────────────────────────── */
+    .result-score {
+      font-size: clamp(3rem, 12vw, 6rem);
+      font-weight: 400;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .result-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    .missed-section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .missed-list {
+      border: 1px solid var(--rule);
+      margin-bottom: 2rem;
+    }
+    .missed-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.7rem 1.25rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .missed-item:last-child { border-bottom: none; }
+    .missed-jp { font-size: 1.1rem; }
+    .missed-romaji { font-size: 0.82rem; color: var(--muted); font-style: italic; }
+    .missed-en { margin-left: auto; color: var(--muted); font-size: 0.9rem; }
+    .result-actions { display: flex; gap: 0.6rem; }
+    .result-btn {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.4rem;
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .result-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .result-btn.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .result-btn.primary:hover { opacity: 0.82; }
+
+    footer {
+      padding: 1rem 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    footer span, footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
     footer a:hover { color: var(--ink); }
-    @media (max-width: 680px) { .site-name { display: none; } header { padding: 0 1rem; height: 48px; justify-content: center; } nav { gap: 0.75rem; } nav a { font-size: 0.62rem; } main { padding: 1.5rem 1rem 3rem; } }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 680px) {
+      .site-name { display: none; }
+      header { padding: 0 1rem; height: 48px; justify-content: center; }
+      nav { gap: 0.75rem; }
+      nav a { font-size: 0.62rem; }
+      main { padding: 1.5rem 1rem 3rem; }
+      .answer-grid { grid-template-columns: 1fr; }
+      .flash-actions { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
@@ -38,15 +361,571 @@
       <a href="mailto:hello@amalcazar.com">Contact</a>
     </nav>
   </header>
+
   <main>
-    <a href="japanese.html" class="back-link">← 日本語</a>
-    <h1 class="quiz-title">日本語 Quiz</h1>
-    <p class="quiz-meta">Level 2 · 初級二</p>
-    <div class="placeholder">Content for this course is not yet available.</div>
+
+    <!-- ── Start screen ─────────────────────────────────────────── -->
+    <div id="startScreen">
+      <a href="japanese.html" class="back-link">← 日本語</a>
+      <h1 class="quiz-title">日本語 Quiz</h1>
+      <p class="quiz-meta">JapanesePod101 · Level 2 · Lessons 1–25</p>
+
+      <div class="settings-panel">
+        <div class="setting-row">
+          <span class="setting-label">Quiz up to</span>
+          <select id="lessonSelect" class="lesson-select"></select>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Mode</span>
+          <div class="toggle-group">
+            <button class="toggle active" id="mcBtn">Multiple choice</button>
+            <button class="toggle" id="flashBtn">Flashcard</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Show romaji</span>
+          <div class="toggle-group">
+            <button class="toggle active" id="romajiOnBtn">Yes</button>
+            <button class="toggle" id="romajiOffBtn">No</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="pool-info" id="poolInfo"></p>
+      <button class="start-btn" id="startBtn">Start quiz →</button>
+    </div>
+
+    <!-- ── Multiple choice screen ───────────────────────────────── -->
+    <div id="quizScreenMC" hidden>
+      <div class="progress-row">
+        <span class="progress-label" id="mcProgress"></span>
+        <span class="progress-label" id="mcScore"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="mcFill"></div></div>
+      <div class="question-card">
+        <div class="question-jp" id="mcJp"></div>
+        <div class="question-romaji" id="mcRomaji"></div>
+      </div>
+      <div class="answer-grid" id="mcOptions"></div>
+    </div>
+
+    <!-- ── Flashcard screen ──────────────────────────────────────── -->
+    <div id="quizScreenFlash" hidden>
+      <div class="progress-row">
+        <span class="progress-label" id="flashProgress"></span>
+        <span class="progress-label" id="flashScore"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="flashFill"></div></div>
+      <div class="flashcard" id="flashCard">
+        <div class="question-jp" id="flashJp"></div>
+        <div class="question-romaji" id="flashRomaji"></div>
+        <div class="flashcard-en" id="flashEn" hidden></div>
+        <div class="flashcard-hint" id="flashHint">tap to reveal</div>
+      </div>
+      <div class="flash-actions" id="flashActions" hidden>
+        <button class="flash-btn primary" id="gotItBtn">Got it ✓</button>
+        <button class="flash-btn" id="tryAgainBtn">Try again ↺</button>
+      </div>
+    </div>
+
+    <!-- ── Result screen ─────────────────────────────────────────── -->
+    <div id="resultScreen" hidden>
+      <div class="result-score" id="resultScore"></div>
+      <p class="result-label" id="resultLabel"></p>
+      <p class="missed-section-label" id="missedLabel"></p>
+      <div class="missed-list" id="missedList"></div>
+      <div class="result-actions">
+        <button class="result-btn primary" id="retryBtn">Try again</button>
+        <button class="result-btn" id="newSelBtn">New selection</button>
+      </div>
+    </div>
+
   </main>
+
   <footer>
     <span>© A. M. Alcazar</span>
     <a href="mailto:hello@moviemarginalia.com">2026</a>
   </footer>
+
+  <script>
+    // ── Vocabulary data ────────────────────────────────────────────────────────
+    const VOCAB = [
+      // Lesson 1 — Meeting People
+      { lesson: 1,  jp: "おねがいします",           romaji: "onegai shimasu",          en: "Please" },
+      { lesson: 1,  jp: "よろしくおねがいします",   romaji: "yoroshiku onegai shimasu", en: "Nice to meet you" },
+      { lesson: 1,  jp: "わたし",                   romaji: "watashi",                  en: "I / me" },
+      { lesson: 1,  jp: "だいがくいんせい",          romaji: "daigakuinsei",             en: "Graduate student" },
+      { lesson: 1,  jp: "ヘアスタイリスト",          romaji: "hea sutairisuto",          en: "Hairdresser" },
+      { lesson: 1,  jp: "こんにちは",               romaji: "konnichiwa",               en: "Hello" },
+      { lesson: 1,  jp: "カウンセラー",             romaji: "kaunseraa",                en: "Counselor" },
+      { lesson: 1,  jp: "えっと",                   romaji: "etto",                     en: "Umm / let's see" },
+      { lesson: 1,  jp: "がくせい",                 romaji: "gakusei",                  en: "Student" },
+      { lesson: 1,  jp: "イタリアじん",             romaji: "Itaria-jin",               en: "Italian" },
+      { lesson: 1,  jp: "しゃちょう",               romaji: "shachoo",                  en: "Company president" },
+      { lesson: 1,  jp: "ファッションコーディネーター", romaji: "fasshon koodeineeta",  en: "Fashion coordinator" },
+
+      // Lesson 2 — Questions & Identity
+      { lesson: 2,  jp: "おはようございます",       romaji: "ohayou gozaimasu",         en: "Good morning" },
+      { lesson: 2,  jp: "インターン",               romaji: "intaan",                   en: "Intern" },
+      { lesson: 2,  jp: "〜さん",                   romaji: "~san",                     en: "Mr. / Ms. (honorific suffix)" },
+      { lesson: 2,  jp: "アメリカじん",             romaji: "Amerika-jin",              en: "American" },
+      { lesson: 2,  jp: "そうです",                 romaji: "sou desu",                 en: "Yes, that's right" },
+      { lesson: 2,  jp: "いいえ、ちがいます",       romaji: "iie, chigaimasu",          en: "No, that's wrong" },
+
+      // Lesson 3 — Food & Negation
+      { lesson: 3,  jp: "ベジタリアン",             romaji: "bejitarian",               en: "Vegetarian" },
+      { lesson: 3,  jp: "ウェイトレス",             romaji: "ueitoresu",                en: "Waitress" },
+      { lesson: 3,  jp: "にく",                     romaji: "niku",                     en: "Meat" },
+      { lesson: 3,  jp: "さかな",                   romaji: "sakana",                   en: "Fish" },
+      { lesson: 3,  jp: "サーモン",                 romaji: "saamon",                   en: "Salmon" },
+      { lesson: 3,  jp: "とり",                     romaji: "tori",                     en: "Bird / fowl" },
+      { lesson: 3,  jp: "とりにく",                 romaji: "toriniku",                 en: "Chicken (meat)" },
+      { lesson: 3,  jp: "やさい",                   romaji: "yasai",                    en: "Vegetable" },
+      { lesson: 3,  jp: "まめ",                     romaji: "mame",                     en: "Beans / peas" },
+      { lesson: 3,  jp: "かんぱい",                 romaji: "kanpai",                   en: "Cheers / toast" },
+      { lesson: 3,  jp: "これ",                     romaji: "kore",                     en: "This (near speaker)" },
+      { lesson: 3,  jp: "それ",                     romaji: "sore",                     en: "That (near listener)" },
+      { lesson: 3,  jp: "あれ",                     romaji: "are",                      en: "That over there" },
+      { lesson: 3,  jp: "ではありません / じゃないです", romaji: "de wa arimasen / ja nai desu", en: "Is not (negative)" },
+
+      // Lesson 4 — Health & Objects
+      { lesson: 4,  jp: "かぜ",                     romaji: "kaze",                     en: "Cold (illness)" },
+      { lesson: 4,  jp: "なに / なん",              romaji: "nani / nan",               en: "What" },
+      { lesson: 4,  jp: "くすり",                   romaji: "kusuri",                   en: "Medicine" },
+      { lesson: 4,  jp: "タバコ",                   romaji: "tabako",                   en: "Cigarettes / tobacco" },
+      { lesson: 4,  jp: "も",                       romaji: "mo",                       en: "Also / too" },
+      { lesson: 4,  jp: "だめ",                     romaji: "dame",                     en: "No good / useless" },
+      { lesson: 4,  jp: "たぶん",                   romaji: "tabun",                    en: "Perhaps / probably" },
+      { lesson: 4,  jp: "え",                       romaji: "eh",                       en: "Huh? / Oh!" },
+
+      // Lesson 5 — Numbers & Technology
+      { lesson: 5,  jp: "コンピューター",           romaji: "konpyuutaa",               en: "Computer" },
+      { lesson: 5,  jp: "パスワード",               romaji: "pasuwaado",                en: "Password" },
+      { lesson: 5,  jp: "かいしゃ",                 romaji: "kaisha",                   en: "Company / corporation" },
+      { lesson: 5,  jp: "でんわ",                   romaji: "denwa",                    en: "Telephone" },
+      { lesson: 5,  jp: "ばんごう",                 romaji: "bangou",                   en: "Number" },
+      { lesson: 5,  jp: "の",                       romaji: "no",                       en: "'s (possessive particle)" },
+      { lesson: 5,  jp: "メールアドレス",           romaji: "meeru adoresu",            en: "Email address" },
+
+      // Lesson 6 — Shopping (100 yen)
+      { lesson: 6,  jp: "いくら",                   romaji: "ikura",                    en: "How much (price)" },
+      { lesson: 6,  jp: "おきゃくさん",             romaji: "okyaku-san",               en: "Customer / guest" },
+      { lesson: 6,  jp: "ここ",                     romaji: "koko",                     en: "Here / this place" },
+      { lesson: 6,  jp: "えん",                     romaji: "en",                       en: "Yen" },
+      { lesson: 6,  jp: "ショップ",                 romaji: "shoppu",                   en: "Shop / store" },
+      { lesson: 6,  jp: "ください",                 romaji: "kudasai",                  en: "Please give me" },
+      { lesson: 6,  jp: "てんいん",                 romaji: "ten'in",                   en: "Shop assistant / clerk" },
+      { lesson: 6,  jp: "いらっしゃいませ",         romaji: "irasshaimase",             en: "Welcome (to a shop)" },
+
+      // Lesson 7 — Shopping (expensive)
+      { lesson: 7,  jp: "かさ",                     romaji: "kasa",                     en: "Umbrella" },
+      { lesson: 7,  jp: "ぜいこみ",                 romaji: "zeikomi",                  en: "Tax included" },
+      { lesson: 7,  jp: "ありがとうございます",     romaji: "arigatou gozaimasu",       en: "Thank you very much" },
+
+      // Lesson 8 — Possessives
+      { lesson: 8,  jp: "わたしの",                 romaji: "watashi no",               en: "My / mine" },
+      { lesson: 8,  jp: "どこ",                     romaji: "doko",                     en: "Where" },
+      { lesson: 8,  jp: "どこの",                   romaji: "doko no",                  en: "Where from / whose (place)" },
+      { lesson: 8,  jp: "だれ",                     romaji: "dare",                     en: "Who" },
+      { lesson: 8,  jp: "だれの",                   romaji: "dare no",                  en: "Whose" },
+
+      // Lesson 9 — Umbrella & Possession
+      { lesson: 9,  jp: "あめ",                     romaji: "ame",                      en: "Rain" },
+      { lesson: 9,  jp: "イタリア",                 romaji: "Itaria",                   en: "Italy" },
+      { lesson: 9,  jp: "デザイン",                 romaji: "dezain",                   en: "Design" },
+      { lesson: 9,  jp: "そう / へえ",              romaji: "sou / hee",                en: "Oh yeah? / I see!" },
+      { lesson: 9,  jp: "すごい",                   romaji: "sugoi",                    en: "Great / amazing / wow" },
+
+      // Lesson 10 — Review & Apologies
+      { lesson: 10, jp: "どうぞ",                   romaji: "doozo",                    en: "Please / here you go / go ahead" },
+      { lesson: 10, jp: "ありがとうございました",   romaji: "arigatou gozaimashita",    en: "Thank you (past action)" },
+      { lesson: 10, jp: "また",                     romaji: "mata",                     en: "Again" },
+      { lesson: 10, jp: "ごめん",                   romaji: "gomen",                    en: "Sorry (casual)" },
+      { lesson: 10, jp: "ごめんなさい",             romaji: "gomen nasai",              en: "I'm sorry" },
+      { lesson: 10, jp: "ない",                     romaji: "nai",                      en: "Doesn't exist / there isn't" },
+      { lesson: 10, jp: "じゃ、また",               romaji: "ja, mata",                 en: "See you again / bye" },
+
+      // Lesson 11 — Weather Adjectives (i-adj)
+      { lesson: 11, jp: "きょう",                   romaji: "kyou",                     en: "Today" },
+      { lesson: 11, jp: "あつい",                   romaji: "atsui",                    en: "Hot (weather)" },
+      { lesson: 11, jp: "でも",                     romaji: "demo",                     en: "But / however" },
+      { lesson: 11, jp: "とても",                   romaji: "totemo",                   en: "Very / extremely" },
+      { lesson: 11, jp: "すずしい",                 romaji: "suzushii",                 en: "Cool (weather)" },
+      { lesson: 11, jp: "さむい",                   romaji: "samui",                    en: "Cold (weather)" },
+      { lesson: 11, jp: "ちょうど",                 romaji: "chouodo",                  en: "Just right" },
+      { lesson: 11, jp: "あたたかい",               romaji: "atatakai",                 en: "Warm (weather)" },
+      { lesson: 11, jp: "ね",                       romaji: "ne",                       en: "Isn't it? (sentence-final particle)" },
+
+      // Lesson 12 — Beauty & na-adjectives
+      { lesson: 12, jp: "しずか（な）",             romaji: "shizuka (na)",             en: "Quiet / peaceful" },
+      { lesson: 12, jp: "いつも",                   romaji: "itsumo",                   en: "Always / usually" },
+      { lesson: 12, jp: "とくべつ（な）",           romaji: "tokubetsu (na)",           en: "Special" },
+      { lesson: 12, jp: "かみ",                     romaji: "kami",                     en: "Hair" },
+      { lesson: 12, jp: "まっすぐ（な）",           romaji: "massugu (na)",             en: "Straight" },
+      { lesson: 12, jp: "きれい（な）",             romaji: "kirei (na)",               en: "Beautiful / clean" },
+      { lesson: 12, jp: "だけ",                     romaji: "dake",                     en: "Only" },
+      { lesson: 12, jp: "もちろん",                 romaji: "mochiron",                 en: "Of course" },
+
+      // Lesson 13 — Lost Wallet & Adjectives before nouns
+      { lesson: 13, jp: "どんな",                   romaji: "donna",                    en: "What kind of" },
+      { lesson: 13, jp: "たかい",                   romaji: "takai",                    en: "Expensive / high / tall" },
+      { lesson: 13, jp: "さいふ",                   romaji: "saifu",                    en: "Wallet" },
+      { lesson: 13, jp: "すてき（な）",             romaji: "suteki (na)",              en: "Lovely / fantastic" },
+      { lesson: 13, jp: "かっこいい",               romaji: "kakkoo ii",                en: "Attractive / stylish" },
+      { lesson: 13, jp: "うれしい",                 romaji: "ureshii",                  en: "Happy / glad" },
+      { lesson: 13, jp: "どういたしまして",         romaji: "douitashimashite",         en: "You're welcome" },
+
+      // Lesson 14 — More Adjectives & Adverbs
+      { lesson: 14, jp: "いそがしい",               romaji: "isogashii",                en: "Busy" },
+      { lesson: 14, jp: "むずかしい",               romaji: "muzukashii",               en: "Difficult" },
+      { lesson: 14, jp: "かんたん（な）",           romaji: "kantan (na)",              en: "Simple / easy" },
+      { lesson: 14, jp: "べんり（な）",             romaji: "benri (na)",               en: "Convenient / useful" },
+      { lesson: 14, jp: "それから",                 romaji: "sorekara",                 en: "And then / and" },
+      { lesson: 14, jp: "やすい",                   romaji: "yasui",                    en: "Cheap / inexpensive" },
+      { lesson: 14, jp: "ヘルシー（な）",           romaji: "heerushii (na)",           en: "Healthy" },
+      { lesson: 14, jp: "あまり",                   romaji: "amari",                    en: "Not very (used in negative)" },
+      { lesson: 14, jp: "ぜんぜん",                 romaji: "zenzen",                   en: "Not at all (used in negative)" },
+
+      // Lesson 15 — Describing People
+      { lesson: 15, jp: "しゃちょう",               romaji: "shachoo",                  en: "Company president" },
+      { lesson: 15, jp: "げんき（な）",             romaji: "genki (na)",               en: "Energetic / healthy / fine" },
+      { lesson: 15, jp: "にぎやか（な）",           romaji: "nigiyaka (na)",            en: "Lively / bustling" },
+      { lesson: 15, jp: "わかい",                   romaji: "wakai",                    en: "Young" },
+      { lesson: 15, jp: "かわいい",                 romaji: "kawaii",                   en: "Cute / pretty" },
+      { lesson: 15, jp: "おんなのひと",             romaji: "onna no hito",             en: "Woman" },
+      { lesson: 15, jp: "ひと",                     romaji: "hito",                     en: "Person / people" },
+      { lesson: 15, jp: "タイプ",                   romaji: "taipu",                    en: "Type" },
+      { lesson: 15, jp: "おちゃ",                   romaji: "ocha",                     en: "(Green) tea" },
+      { lesson: 15, jp: "おいしい",                 romaji: "oishii",                   en: "Delicious / tasty" },
+
+      // Lesson 16 — Telling Time
+      { lesson: 16, jp: "うんてんしゅ",             romaji: "untenshu",                 en: "Driver" },
+      { lesson: 16, jp: "おきゃくさん",             romaji: "okyaku-san",               en: "Customer / guest" },
+      { lesson: 16, jp: "じゅうたい",               romaji: "juutai",                   en: "Traffic jam" },
+      { lesson: 16, jp: "なんじ",                   romaji: "nan-ji",                   en: "What time?" },
+      { lesson: 16, jp: "すみません",               romaji: "sumimasen",                en: "Excuse me" },
+      { lesson: 16, jp: "タクシー",                 romaji: "takushii",                 en: "Taxi" },
+      { lesson: 16, jp: "はん",                     romaji: "han",                      en: "Half past" },
+      { lesson: 16, jp: "ホテル",                   romaji: "hoteru",                   en: "Hotel" },
+
+      // Lesson 17 — Time Expressions (kara / made)
+      { lesson: 17, jp: "しごと",                   romaji: "shigoto",                  en: "Work / job" },
+      { lesson: 17, jp: "パーティー",               romaji: "paatii",                   en: "Party" },
+      { lesson: 17, jp: "から",                     romaji: "kara",                     en: "From" },
+      { lesson: 17, jp: "ともだち",                 romaji: "tomodachi",                en: "Friend(s)" },
+      { lesson: 17, jp: "はちじはん",               romaji: "hachi-ji han",             en: "8:30" },
+      { lesson: 17, jp: "ろくじはん",               romaji: "roku-ji han",              en: "6:30" },
+
+      // Lesson 18 — Duration & Minutes
+      { lesson: 18, jp: "なんぷん",                 romaji: "nan-pun",                  en: "How many minutes?" },
+      { lesson: 18, jp: "ごふん",                   romaji: "go-fun",                   en: "Five minutes" },
+      { lesson: 18, jp: "じゅっぷん",               romaji: "juppun",                   en: "Ten minutes" },
+      { lesson: 18, jp: "ぐらい",                   romaji: "gurai",                    en: "Approximately / about" },
+      { lesson: 18, jp: "えき",                     romaji: "eki",                      en: "Station" },
+      { lesson: 18, jp: "なんじかん",               romaji: "nan-jikan",                en: "How many hours?" },
+
+      // Lesson 19 — Days of the Week
+      { lesson: 19, jp: "あした",                   romaji: "ashita",                   en: "Tomorrow" },
+      { lesson: 19, jp: "きのう",                   romaji: "kinou",                    en: "Yesterday" },
+      { lesson: 19, jp: "きょう",                   romaji: "kyou",                     en: "Today" },
+      { lesson: 19, jp: "うそ",                     romaji: "uso",                      en: "Lie / No way! / Really?!" },
+      { lesson: 19, jp: "ほんとう",                 romaji: "hontou",                   en: "Truth / really?" },
+      { lesson: 19, jp: "げつようび",               romaji: "getsuyoubi",               en: "Monday" },
+      { lesson: 19, jp: "かようび",                 romaji: "kayoubi",                  en: "Tuesday" },
+      { lesson: 19, jp: "すいようび",               romaji: "suiyoubi",                 en: "Wednesday" },
+      { lesson: 19, jp: "もくようび",               romaji: "mokuyoubi",                en: "Thursday" },
+      { lesson: 19, jp: "きんようび",               romaji: "kin'youbi",                en: "Friday" },
+      { lesson: 19, jp: "どようび",                 romaji: "doyoubi",                  en: "Saturday" },
+      { lesson: 19, jp: "にちようび",               romaji: "nichiyoubi",               en: "Sunday" },
+      { lesson: 19, jp: "なんようび",               romaji: "nan'youbi",                en: "What day of the week?" },
+
+      // Lesson 20 — Months & Dates
+      { lesson: 20, jp: "たんじょうび",             romaji: "tanjoubi",                 en: "Birthday" },
+      { lesson: 20, jp: "おめでとう",               romaji: "omedetou",                 en: "Congratulations!" },
+      { lesson: 20, jp: "みなさん",                 romaji: "mina-san",                 en: "Everyone" },
+      { lesson: 20, jp: "なんがつ",                 romaji: "nan-gatsu",                en: "What month?" },
+      { lesson: 20, jp: "しちがつ",                 romaji: "shichi-gatsu",             en: "July" },
+      { lesson: 20, jp: "なんにち",                 romaji: "nannichi",                 en: "What day (of the month)?" },
+      { lesson: 20, jp: "なのか",                   romaji: "nanoka",                   en: "The 7th (day)" },
+      { lesson: 20, jp: "ちょっと",                 romaji: "chotto",                   en: "A little / a bit" },
+      { lesson: 20, jp: "わたし",                   romaji: "watashi",                  en: "I / me" },
+
+      // Lesson 21 — Verbs (-masu form) & Music
+      { lesson: 21, jp: "おんがく",                 romaji: "ongaku",                   en: "Music" },
+      { lesson: 21, jp: "ききます",                 romaji: "kikimasu",                 en: "To listen / to hear" },
+      { lesson: 21, jp: "ほんとう",                 romaji: "hontou",                   en: "Truth / really?" },
+      { lesson: 21, jp: "よる",                     romaji: "yoru",                     en: "Evening / night" },
+      { lesson: 21, jp: "ひま（な）",               romaji: "hima (na)",                en: "Free (time) / not busy" },
+      { lesson: 21, jp: "アイポッド",               romaji: "aiPoddo",                  en: "iPod" },
+      { lesson: 21, jp: "あさ",                     romaji: "asa",                      en: "Morning" },
+      { lesson: 21, jp: "ひる",                     romaji: "hiru",                     en: "Noon" },
+      { lesson: 21, jp: "ごご",                     romaji: "gogo",                     en: "Afternoon / p.m." },
+      { lesson: 21, jp: "ばん / こんや",            romaji: "ban / konya",              en: "Evening / tonight" },
+
+      // Lesson 22 — Going Out (to / de particles)
+      { lesson: 22, jp: "だめ",                     romaji: "dame",                     en: "No good / useless" },
+      { lesson: 22, jp: "えいが",                   romaji: "eiga",                     en: "Movie / film" },
+      { lesson: 22, jp: "サルサ",                   romaji: "sarusa",                   en: "Salsa (dancing)" },
+      { lesson: 22, jp: "うち",                     romaji: "uchi",                     en: "Home / house" },
+      { lesson: 22, jp: "します",                   romaji: "shimasu",                  en: "To do" },
+      { lesson: 22, jp: "みます",                   romaji: "mimasu",                   en: "To watch / to see" },
+      { lesson: 22, jp: "で",                       romaji: "de",                       en: "Particle (location of action / by means of)" },
+      { lesson: 22, jp: "と",                       romaji: "to",                       en: "Particle (together with)" },
+
+      // Lesson 23 — Transportation (e particle)
+      { lesson: 23, jp: "たのしい",                 romaji: "tanoshii",                 en: "Fun / enjoyable" },
+      { lesson: 23, jp: "でんしゃ",                 romaji: "densha",                   en: "Train" },
+      { lesson: 23, jp: "かえります",               romaji: "kaerimasu",                en: "To return / to go back" },
+      { lesson: 23, jp: "タクシー",                 romaji: "takushii",                 en: "Taxi" },
+      { lesson: 23, jp: "いきます",                 romaji: "ikimasu",                  en: "To go" },
+      { lesson: 23, jp: "ちかてつ",                 romaji: "chikatetsu",               en: "Subway" },
+      { lesson: 23, jp: "きます",                   romaji: "kimasu",                   en: "To come" },
+      { lesson: 23, jp: "もう",                     romaji: "mou",                      en: "Already" },
+
+      // Lesson 24 — Train Station
+      { lesson: 24, jp: "えきいん",                 romaji: "ekiin",                    en: "Station attendant" },
+      { lesson: 24, jp: "しんじゅく",               romaji: "Shinjuku",                 en: "Shinjuku (place name)" },
+      { lesson: 24, jp: "しゅうでん",               romaji: "shuden",                   en: "Last train" },
+      { lesson: 24, jp: "わかります",               romaji: "wakarimasu",               en: "To understand / to know" },
+      { lesson: 24, jp: "つぎ",                     romaji: "tsugi",                    en: "Next" },
+      { lesson: 24, jp: "しゃこ",                   romaji: "shako",                    en: "Garage / car depot" },
+      { lesson: 24, jp: "かいそうでんしゃ",         romaji: "kaisou densha",            en: "Out-of-service train" },
+
+      // Lesson 25 — Telephone & Review
+      { lesson: 25, jp: "いちど",                   romaji: "ichido",                   en: "Once / one time" },
+      { lesson: 25, jp: "やすみます",               romaji: "yasumimasu",               en: "To rest / to take a day off" },
+      { lesson: 25, jp: "ごぜん",                   romaji: "gozen",                    en: "A.m." },
+      { lesson: 25, jp: "ごご",                     romaji: "gogo",                     en: "P.m. / afternoon" },
+      { lesson: 25, jp: "もしもし",                 romaji: "moshimoshi",               en: "Hello (on the phone)" },
+      { lesson: 25, jp: "だいじょうぶ",             romaji: "daijoubu",                 en: "All right / okay" },
+      { lesson: 25, jp: "また",                     romaji: "mata",                     en: "Again" },
+      { lesson: 25, jp: "いつ",                     romaji: "itsu",                     en: "When" },
+      { lesson: 25, jp: "だれ",                     romaji: "dare",                     en: "Who" },
+      { lesson: 25, jp: "どこ",                     romaji: "doko",                     en: "Where" },
+      { lesson: 25, jp: "なに",                     romaji: "nani",                     en: "What" },
+    ];
+
+    // ── Constants & state ──────────────────────────────────────────────────────
+    const STORAGE_KEY = 'jp_course2_maxLesson';
+    const Q_COUNT = 10;
+
+    const availableLessons = [...new Set(VOCAB.map(v => v.lesson))].sort((a, b) => a - b);
+    const lessonMax = availableLessons[availableLessons.length - 1];
+
+    let maxLesson = Math.min(parseInt(localStorage.getItem(STORAGE_KEY)) || 1, lessonMax);
+    let mode = 'mc';
+    let showRomaji = true;
+    let questions = [];
+    let currentQ = 0;
+    let score = 0;
+    let missed = [];
+    let flashRevealed = false;
+
+    // ── Lesson selector ────────────────────────────────────────────────────────
+    const lessonSelect = document.getElementById('lessonSelect');
+    availableLessons.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = `Lesson ${n}`;
+      if (n === maxLesson) opt.selected = true;
+      lessonSelect.appendChild(opt);
+    });
+    lessonSelect.addEventListener('change', () => {
+      maxLesson = parseInt(lessonSelect.value);
+      localStorage.setItem(STORAGE_KEY, maxLesson);
+      updatePoolInfo();
+    });
+
+    function updatePoolInfo() {
+      const pool = getPool();
+      const lessons = [...new Set(pool.map(v => v.lesson))].length;
+      const q = Math.min(Q_COUNT, pool.length);
+      document.getElementById('poolInfo').textContent =
+        `${q} question${q !== 1 ? 's' : ''} · ${pool.length} word${pool.length !== 1 ? 's' : ''} · ${lessons} lesson${lessons !== 1 ? 's' : ''}`;
+      document.getElementById('startBtn').disabled = pool.length < 2;
+    }
+    updatePoolInfo();
+
+    // ── Mode & romaji toggles ──────────────────────────────────────────────────
+    document.getElementById('mcBtn').addEventListener('click', () => setMode('mc'));
+    document.getElementById('flashBtn').addEventListener('click', () => setMode('flash'));
+    document.getElementById('romajiOnBtn').addEventListener('click', () => setRomaji(true));
+    document.getElementById('romajiOffBtn').addEventListener('click', () => setRomaji(false));
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mcBtn').classList.toggle('active', m === 'mc');
+      document.getElementById('flashBtn').classList.toggle('active', m === 'flash');
+    }
+    function setRomaji(on) {
+      showRomaji = on;
+      document.getElementById('romajiOnBtn').classList.toggle('active', on);
+      document.getElementById('romajiOffBtn').classList.toggle('active', !on);
+    }
+
+    // ── Utilities ──────────────────────────────────────────────────────────────
+    function getPool() { return VOCAB.filter(v => v.lesson <= maxLesson); }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function showOnly(id) {
+      ['startScreen', 'quizScreenMC', 'quizScreenFlash', 'resultScreen'].forEach(s => {
+        document.getElementById(s).hidden = s !== id;
+      });
+    }
+
+    // ── Start / restart ────────────────────────────────────────────────────────
+    document.getElementById('startBtn').addEventListener('click', startQuiz);
+    document.getElementById('retryBtn').addEventListener('click', startQuiz);
+    document.getElementById('newSelBtn').addEventListener('click', () => showOnly('startScreen'));
+
+    function startQuiz() {
+      const pool = getPool();
+      questions = shuffle(pool).slice(0, Math.min(Q_COUNT, pool.length));
+      currentQ = 0;
+      score = 0;
+      missed = [];
+      if (mode === 'mc') {
+        showOnly('quizScreenMC');
+        renderMC();
+      } else {
+        showOnly('quizScreenFlash');
+        renderFlash();
+      }
+    }
+
+    // ── Multiple choice ────────────────────────────────────────────────────────
+    function renderMC() {
+      const pool = getPool();
+      const q = questions[currentQ];
+      const total = questions.length;
+
+      document.getElementById('mcProgress').textContent = `${currentQ + 1} / ${total}`;
+      document.getElementById('mcScore').textContent = `${score} correct`;
+      document.getElementById('mcFill').style.width = `${(currentQ / total) * 100}%`;
+      document.getElementById('mcJp').textContent = q.jp;
+
+      const romEl = document.getElementById('mcRomaji');
+      romEl.textContent = showRomaji ? q.romaji : '';
+      romEl.hidden = !showRomaji;
+
+      const pool2 = pool.filter(v => v.en !== q.en);
+      const wrongs = shuffle(pool2).slice(0, 3);
+      const options = shuffle([q, ...wrongs]);
+
+      const grid = document.getElementById('mcOptions');
+      grid.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = opt.en;
+        btn.addEventListener('click', () => handleMC(btn, opt.en === q.en, q));
+        grid.appendChild(btn);
+      });
+    }
+
+    function handleMC(clicked, correct, q) {
+      document.querySelectorAll('.answer-btn').forEach(b => {
+        b.disabled = true;
+        if (b.textContent === q.en) b.classList.add('correct');
+      });
+      if (correct) {
+        score++;
+      } else {
+        clicked.classList.add('wrong');
+        missed.push(q);
+      }
+      document.getElementById('mcScore').textContent = `${score} correct`;
+      setTimeout(() => {
+        currentQ++;
+        currentQ < questions.length ? renderMC() : showResults();
+      }, 1200);
+    }
+
+    // ── Flashcard ──────────────────────────────────────────────────────────────
+    function renderFlash() {
+      const q = questions[currentQ];
+      const total = questions.length;
+      flashRevealed = false;
+
+      document.getElementById('flashProgress').textContent = `${currentQ + 1} / ${total}`;
+      document.getElementById('flashScore').textContent = `${score} correct`;
+      document.getElementById('flashFill').style.width = `${(currentQ / total) * 100}%`;
+      document.getElementById('flashJp').textContent = q.jp;
+
+      const romEl = document.getElementById('flashRomaji');
+      romEl.textContent = showRomaji ? q.romaji : '';
+      romEl.hidden = !showRomaji;
+
+      document.getElementById('flashEn').textContent = q.en;
+      document.getElementById('flashEn').hidden = true;
+      document.getElementById('flashHint').hidden = false;
+      document.getElementById('flashActions').hidden = true;
+
+      const card = document.getElementById('flashCard');
+      card.classList.remove('revealed');
+    }
+
+    document.getElementById('flashCard').addEventListener('click', () => {
+      if (flashRevealed) return;
+      flashRevealed = true;
+      document.getElementById('flashEn').hidden = false;
+      document.getElementById('flashHint').hidden = true;
+      document.getElementById('flashActions').hidden = false;
+      document.getElementById('flashCard').classList.add('revealed');
+    });
+
+    document.getElementById('gotItBtn').addEventListener('click', () => rateFlash(true));
+    document.getElementById('tryAgainBtn').addEventListener('click', () => rateFlash(false));
+
+    function rateFlash(gotIt) {
+      if (gotIt) score++;
+      else missed.push(questions[currentQ]);
+      document.getElementById('flashScore').textContent = `${score} correct`;
+      currentQ++;
+      currentQ < questions.length ? renderFlash() : showResults();
+    }
+
+    // ── Results ────────────────────────────────────────────────────────────────
+    function showResults() {
+      showOnly('resultScreen');
+      const total = questions.length;
+      document.getElementById('resultScore').textContent = `${score} / ${total}`;
+      document.getElementById('resultLabel').textContent =
+        score === total        ? 'Perfect!' :
+        score >= total * 0.8   ? 'Great work.' :
+        score >= total * 0.6   ? 'Good effort.' : 'Keep practicing.';
+
+      const missedList = document.getElementById('missedList');
+      const missedLabel = document.getElementById('missedLabel');
+      missedList.innerHTML = '';
+
+      if (missed.length === 0) {
+        missedList.hidden = true;
+        missedLabel.hidden = true;
+      } else {
+        missedList.hidden = false;
+        missedLabel.hidden = false;
+        missedLabel.textContent = `Missed — ${missed.length} word${missed.length !== 1 ? 's' : ''}`;
+        missed.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'missed-item';
+          row.innerHTML = `
+            <span class="missed-jp">${item.jp}</span>
+            <span class="missed-romaji">${item.romaji}</span>
+            <span class="missed-en">${item.en}</span>
+          `;
+          missedList.appendChild(row);
+        });
+      }
+    }
+  </script>
 </body>
 </html>
