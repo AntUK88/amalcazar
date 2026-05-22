@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Lexicon — A. M. Alcazar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg: #fff7ed; --ink: #1a1814; --muted: #8a8478; --rule: #d8d2c8; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+      min-height: 100vh;
+    }
+
+    body { display: flex; flex-direction: column; }
+
+    /* ── Header ── */
+    header {
+      padding: 0 3rem;
+      height: 56px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+      flex-shrink: 0;
+    }
+
+    .site-name {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    nav { display: flex; gap: 2rem; align-items: center; }
+    nav a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--ink); }
+    nav a.active { color: var(--ink); }
+
+    .nav-item { position: relative; display: flex; align-items: center; }
+    .nav-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff7ed;
+      border: 1px solid var(--rule);
+      min-width: 160px;
+      z-index: 200;
+      padding: 0.75rem 0 0.5rem;
+    }
+    .nav-dropdown a {
+      display: block;
+      padding: 0.45rem 1rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .nav-dropdown a:hover { color: var(--ink); }
+    .nav-item:hover .nav-dropdown { display: block; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 1rem 3rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    footer span, footer a {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--ink); }
+
+    /* ── Main layout ── */
+    main {
+      flex: 1;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Page title & mode toggle ── */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .page-title {
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .mode-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .mode-btn:hover { color: var(--ink); }
+    .mode-btn.active { color: var(--ink); }
+
+    /* ── Add word form ── */
+    .add-form {
+      display: flex;
+      gap: 0;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .add-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.05rem;
+      color: var(--ink);
+      padding: 0.5rem 0;
+      letter-spacing: 0.01em;
+    }
+    .add-input::placeholder { color: var(--muted); font-style: italic; }
+
+    .add-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.5rem 0 0.5rem 1rem;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+    .add-btn:hover { color: var(--ink); }
+    .add-btn:disabled { opacity: 0.4; cursor: default; }
+
+    /* ── Status message ── */
+    .status {
+      font-size: 0.78rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      min-height: 1.2em;
+    }
+
+    /* ── Word list ── */
+    .word-list { list-style: none; }
+
+    .word-entry {
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .word-entry:first-child { border-top: 1px solid var(--rule); }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.3rem;
+    }
+
+    .entry-word {
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    .entry-pos {
+      font-size: 0.82rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-left: 0.6rem;
+      font-weight: 400;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .entry-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .entry-btn:hover { color: var(--ink); }
+    .entry-btn.delete-btn:hover { color: #8b2020; }
+
+    .entry-def {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+
+    /* ── Edit state ── */
+    .edit-area {
+      width: 100%;
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--rule);
+      outline: none;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--ink);
+      resize: none;
+      padding: 0.25rem 0;
+      margin-top: 0.25rem;
+    }
+    .edit-area:focus { border-bottom-color: var(--ink); }
+
+    .edit-controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.6rem;
+    }
+
+    /* ── Empty state ── */
+    .empty {
+      padding: 3rem 0;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ── Quiz mode ── */
+    .quiz-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1rem;
+    }
+
+    .quiz-meta {
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Card flip */
+    .card-scene {
+      width: 100%;
+      max-width: 480px;
+      height: 240px;
+      perspective: 1200px;
+      cursor: pointer;
+      margin-bottom: 2rem;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+
+    .card-scene.flipped .card-inner { transform: rotateY(180deg); }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .card-back { transform: rotateY(180deg); }
+
+    .card-word {
+      font-size: 1.8rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-pos {
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .card-hint {
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 1.5rem;
+    }
+
+    .card-def {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+
+    .card-def-word {
+      display: block;
+      font-size: 0.82rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+
+    /* Quiz controls */
+    .quiz-controls {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .quiz-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.5rem 0;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .quiz-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: currentColor;
+      transition: width 0.25s;
+    }
+    .quiz-btn:hover::after { width: 100%; }
+    .quiz-btn.correct-btn:hover { color: #2a5c2a; }
+    .quiz-btn.incorrect-btn:hover { color: #8b2020; }
+    .quiz-btn.reveal-btn { color: var(--ink); }
+    .quiz-btn.reveal-btn:hover { color: var(--ink); }
+
+    .quiz-empty {
+      text-align: center;
+      padding: 4rem 0;
+    }
+    .quiz-empty p {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .site-name { display: none; }
+      header { padding: 0 1.5rem; height: 48px; justify-content: center; }
+      nav { gap: 1.25rem; }
+      nav a { font-size: 0.68rem; }
+      main { padding: 2rem 1.25rem 4rem; }
+      footer { padding: 1rem 1.5rem; }
+      .nav-dropdown { left: 0; transform: none; }
+      .card-scene { height: 200px; }
+      .card-word { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="site-name">A. M. Alcazar</a>
+    <nav>
+      <div class="nav-item">
+        <a href="https://moviemarginalia.com">Writing</a>
+        <div class="nav-dropdown">
+          <a href="https://moviemarginalia.substack.com" target="_blank">Movie Marginalia</a>
+          <a href="https://moviemarginalia.com/selected">Featured Reviews</a>
+        </div>
+      </div>
+      <a href="/photography.html">Photography</a>
+      <a href="/bio.html">Bio</a>
+      <a href="/cv.html">CV</a>
+      <a href="mailto:hello@amalcazar.com">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <span class="page-title">Lexicon</span>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="btn-library">Library</button>
+        <button class="mode-btn" id="btn-quiz">Quiz</button>
+      </div>
+    </div>
+
+    <!-- Library mode -->
+    <div id="view-library">
+      <form class="add-form" id="add-form" autocomplete="off">
+        <input
+          type="text"
+          class="add-input"
+          id="word-input"
+          placeholder="Add a word…"
+          spellcheck="false"
+        >
+        <button type="submit" class="add-btn" id="add-btn">Add</button>
+      </form>
+      <p class="status" id="status"></p>
+      <ul class="word-list" id="word-list"></ul>
+      <p class="empty" id="empty-msg" style="display:none">No words yet. Add one above.</p>
+    </div>
+
+    <!-- Quiz mode -->
+    <div id="view-quiz" style="display:none">
+      <div class="quiz-wrap">
+        <p class="quiz-meta" id="quiz-meta"></p>
+        <div class="card-scene" id="card-scene" role="button" aria-label="Flip card">
+          <div class="card-inner">
+            <div class="card-face card-front">
+              <span class="card-word" id="card-word"></span>
+              <span class="card-pos" id="card-pos"></span>
+              <span class="card-hint">tap to reveal</span>
+            </div>
+            <div class="card-face card-back">
+              <span class="card-def" id="card-def"></span>
+              <span class="card-def-word" id="card-def-word"></span>
+            </div>
+          </div>
+        </div>
+        <div class="quiz-controls" id="quiz-controls">
+          <button class="quiz-btn reveal-btn" id="reveal-btn">Reveal</button>
+        </div>
+        <div class="quiz-empty" id="quiz-empty" style="display:none">
+          <p>No words to review.</p>
+          <p>Add some words in the Library.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>© A. M. Alcazar</span>
+    <span>2026</span>
+  </footer>
+
+  <script>
+  (() => {
+    const STORAGE_KEY = 'amalcazar_lexicon_v1';
+
+    // ── Storage abstraction (window.storage API with localStorage fallback) ──
+    async function storageGet() {
+      try {
+        if (window.storage && typeof window.storage.getItem === 'function') {
+          const raw = await window.storage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : [];
+        }
+      } catch (e) {}
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }
+
+    async function storageSet(data) {
+      const serialized = JSON.stringify(data);
+      try {
+        if (window.storage && typeof window.storage.setItem === 'function') {
+          await window.storage.setItem(STORAGE_KEY, serialized);
+          return;
+        }
+      } catch (e) {}
+      localStorage.setItem(STORAGE_KEY, serialized);
+    }
+
+    // ── State ──
+    let entries = [];       // [{ id, word, partOfSpeech, definition, interval, nextReview, correct, incorrect }]
+    let currentMode = 'library';
+    let quizCard = null;    // current card being shown
+    let quizRevealed = false;
+
+    // ── ID generator ──
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    }
+
+    // ── Spaced repetition helpers ──
+    const MIN_INTERVAL = 0.25;  // days (~6 hours) for wrong answers
+    const INITIAL_INTERVAL = 1; // days for new cards
+
+    function scheduleNext(entry, correct) {
+      const now = Date.now();
+      if (correct) {
+        const newInterval = Math.max(entry.interval * 2.5, entry.interval + 1);
+        entry.interval = newInterval;
+        entry.correct = (entry.correct || 0) + 1;
+      } else {
+        entry.interval = MIN_INTERVAL;
+        entry.incorrect = (entry.incorrect || 0) + 1;
+      }
+      entry.nextReview = now + entry.interval * 86400000;
+    }
+
+    function pickNextCard() {
+      if (entries.length === 0) return null;
+      const now = Date.now();
+      // Sort: overdue first (nextReview ascending), then fallback to soonest upcoming
+      const sorted = [...entries].sort((a, b) => (a.nextReview || 0) - (b.nextReview || 0));
+      return sorted[0];
+    }
+
+    // ── Fetch definition ──
+    async function fetchDefinition(word) {
+      const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.trim().toLowerCase())}`);
+      if (!res.ok) throw new Error('Word not found');
+      const data = await res.json();
+      const meaning = data[0]?.meanings?.[0];
+      return {
+        definition: meaning?.definitions?.[0]?.definition || '',
+        partOfSpeech: meaning?.partOfSpeech || '',
+      };
+    }
+
+    // ── Render library ──
+    function renderLibrary() {
+      const list = document.getElementById('word-list');
+      const empty = document.getElementById('empty-msg');
+
+      if (entries.length === 0) {
+        list.innerHTML = '';
+        empty.style.display = '';
+        return;
+      }
+      empty.style.display = 'none';
+
+      const sorted = [...entries].sort((a, b) =>
+        a.word.localeCompare(b.word, undefined, { sensitivity: 'base' })
+      );
+
+      list.innerHTML = sorted.map(e => `
+        <li class="word-entry" data-id="${e.id}">
+          <div class="entry-header">
+            <span>
+              <span class="entry-word">${escHtml(e.word)}</span>${e.partOfSpeech ? `<span class="entry-pos">${escHtml(e.partOfSpeech)}</span>` : ''}
+            </span>
+            <span class="entry-actions">
+              <button class="entry-btn edit-btn" data-id="${e.id}">Edit</button>
+              <button class="entry-btn delete-btn" data-id="${e.id}">Delete</button>
+            </span>
+          </div>
+          <p class="entry-def" id="def-${e.id}">${escHtml(e.definition)}</p>
+        </li>
+      `).join('');
+
+      list.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => startEdit(btn.dataset.id));
+      });
+      list.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteEntry(btn.dataset.id));
+      });
+    }
+
+    function startEdit(id) {
+      const entry = entries.find(e => e.id === id);
+      if (!entry) return;
+
+      const defEl = document.getElementById(`def-${id}`);
+      if (!defEl) return;
+
+      const li = defEl.closest('.word-entry');
+      if (li.querySelector('.edit-area')) return; // already editing
+
+      defEl.style.display = 'none';
+
+      const textarea = document.createElement('textarea');
+      textarea.className = 'edit-area';
+      textarea.value = entry.definition;
+      textarea.rows = Math.max(2, Math.ceil(entry.definition.length / 70));
+
+      const controls = document.createElement('div');
+      controls.className = 'edit-controls';
+
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'entry-btn';
+      saveBtn.textContent = 'Save';
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'entry-btn';
+      cancelBtn.textContent = 'Cancel';
+
+      controls.append(saveBtn, cancelBtn);
+      defEl.after(textarea);
+      textarea.after(controls);
+      textarea.focus();
+
+      saveBtn.addEventListener('click', async () => {
+        entry.definition = textarea.value.trim();
+        await storageSet(entries);
+        renderLibrary();
+      });
+      cancelBtn.addEventListener('click', () => {
+        textarea.remove();
+        controls.remove();
+        defEl.style.display = '';
+      });
+    }
+
+    async function deleteEntry(id) {
+      entries = entries.filter(e => e.id !== id);
+      await storageSet(entries);
+      renderLibrary();
+    }
+
+    // ── Render quiz ──
+    function renderQuiz() {
+      const card = pickNextCard();
+      quizCard = card;
+      quizRevealed = false;
+
+      const scene = document.getElementById('card-scene');
+      const empty = document.getElementById('quiz-empty');
+      const controls = document.getElementById('quiz-controls');
+      const meta = document.getElementById('quiz-meta');
+
+      scene.classList.remove('flipped');
+
+      if (!card) {
+        scene.style.display = 'none';
+        empty.style.display = '';
+        controls.style.display = 'none';
+        meta.textContent = '';
+        return;
+      }
+
+      scene.style.display = '';
+      empty.style.display = 'none';
+      controls.style.display = '';
+
+      document.getElementById('card-word').textContent = card.word;
+      document.getElementById('card-pos').textContent = card.partOfSpeech || '';
+      document.getElementById('card-def').textContent = card.definition;
+      document.getElementById('card-def-word').textContent = card.word;
+
+      const total = entries.length;
+      const due = entries.filter(e => (e.nextReview || 0) <= Date.now()).length;
+      meta.textContent = due > 0 ? `${due} of ${total} due` : `${total} word${total !== 1 ? 's' : ''}`;
+
+      showRevealControls();
+    }
+
+    function showRevealControls() {
+      const controls = document.getElementById('quiz-controls');
+      controls.innerHTML = '';
+      const revealBtn = document.createElement('button');
+      revealBtn.className = 'quiz-btn reveal-btn';
+      revealBtn.id = 'reveal-btn';
+      revealBtn.textContent = 'Reveal';
+      revealBtn.addEventListener('click', revealCard);
+      controls.appendChild(revealBtn);
+    }
+
+    function revealCard() {
+      if (quizRevealed) return;
+      quizRevealed = true;
+      document.getElementById('card-scene').classList.add('flipped');
+
+      const controls = document.getElementById('quiz-controls');
+      controls.innerHTML = '';
+
+      const incorrectBtn = document.createElement('button');
+      incorrectBtn.className = 'quiz-btn incorrect-btn';
+      incorrectBtn.textContent = 'Incorrect';
+      incorrectBtn.addEventListener('click', () => markAnswer(false));
+
+      const correctBtn = document.createElement('button');
+      correctBtn.className = 'quiz-btn correct-btn';
+      correctBtn.textContent = 'Correct';
+      correctBtn.addEventListener('click', () => markAnswer(true));
+
+      controls.append(incorrectBtn, correctBtn);
+    }
+
+    async function markAnswer(correct) {
+      if (!quizCard) return;
+      const entry = entries.find(e => e.id === quizCard.id);
+      if (entry) {
+        scheduleNext(entry, correct);
+        await storageSet(entries);
+      }
+      renderQuiz();
+    }
+
+    // ── Mode switching ──
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('view-library').style.display = mode === 'library' ? '' : 'none';
+      document.getElementById('view-quiz').style.display = mode === 'quiz' ? '' : 'none';
+      document.getElementById('btn-library').classList.toggle('active', mode === 'library');
+      document.getElementById('btn-quiz').classList.toggle('active', mode === 'quiz');
+      if (mode === 'quiz') renderQuiz();
+    }
+
+    // ── Add form ──
+    document.getElementById('add-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('word-input');
+      const word = input.value.trim();
+      if (!word) return;
+
+      const btn = document.getElementById('add-btn');
+      const status = document.getElementById('status');
+
+      // Prevent duplicate
+      if (entries.some(en => en.word.toLowerCase() === word.toLowerCase())) {
+        status.textContent = `"${word}" is already in your lexicon.`;
+        return;
+      }
+
+      btn.disabled = true;
+      status.textContent = `Fetching definition…`;
+
+      try {
+        const { definition, partOfSpeech } = await fetchDefinition(word);
+        const now = Date.now();
+        const entry = {
+          id: uid(),
+          word: word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+          partOfSpeech,
+          definition,
+          interval: INITIAL_INTERVAL,
+          nextReview: now,
+          correct: 0,
+          incorrect: 0,
+        };
+        entries.push(entry);
+        await storageSet(entries);
+        input.value = '';
+        status.textContent = '';
+        renderLibrary();
+      } catch (err) {
+        status.textContent = `Could not find a definition for "${word}". You can add it manually.`;
+        // Add with blank definition so the user can fill it in
+        const now = Date.now();
+        const entry = {
+          id: uid(),
+          word: word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+          partOfSpeech: '',
+          definition: '',
+          interval: INITIAL_INTERVAL,
+          nextReview: now,
+          correct: 0,
+          incorrect: 0,
+        };
+        entries.push(entry);
+        await storageSet(entries);
+        input.value = '';
+        renderLibrary();
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // ── Card tap to reveal ──
+    document.getElementById('card-scene').addEventListener('click', () => {
+      if (!quizRevealed) revealCard();
+    });
+
+    // ── Mode buttons ──
+    document.getElementById('btn-library').addEventListener('click', () => setMode('library'));
+    document.getElementById('btn-quiz').addEventListener('click', () => setMode('quiz'));
+
+    // ── Keyboard shortcuts ──
+    document.addEventListener('keydown', (e) => {
+      if (currentMode !== 'quiz' || !quizCard) return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        if (!quizRevealed) revealCard();
+      } else if (quizRevealed) {
+        if (e.key === 'ArrowRight' || e.key === '1') markAnswer(true);
+        if (e.key === 'ArrowLeft' || e.key === '2') markAnswer(false);
+      }
+    });
+
+    // ── Escape HTML ──
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ── Init ──
+    (async () => {
+      entries = await storageGet();
+      renderLibrary();
+    })();
+  })();
+  </script>
+
+</body>
+</html>
