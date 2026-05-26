@@ -398,6 +398,7 @@
     .quiz-btn.incorrect-btn:hover { color: #8b2020; }
     .quiz-btn.reveal-btn { color: var(--ink); }
     .quiz-btn.reveal-btn:hover { color: var(--ink); }
+    .quiz-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
 
     .quiz-empty {
       text-align: center;
@@ -490,8 +491,8 @@
           <button class="quiz-btn reveal-btn" id="reveal-btn">Reveal</button>
         </div>
         <div class="quiz-empty" id="quiz-empty" style="display:none">
-          <p>No words to review.</p>
-          <p>Add some words in the Library.</p>
+          <p id="quiz-empty-primary">No words to review.</p>
+          <p id="quiz-empty-secondary">Add some words in the Library.</p>
         </div>
       </div>
     </div>
@@ -502,72 +503,80 @@
     <span>2026</span>
   </footer>
 
+  <!-- Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
   (() => {
-    const STORAGE_KEY = 'amalcazar_lexicon_v1';
+    // ── Supabase config ──────────────────────────────────────────────────────
+    const SUPABASE_URL      = 'https://necmnunwnlnchwojhory.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_Zx1YLiLGjUQUL6vMjCFGJQ_XJOYGpIk';
+    // ────────────────────────────────────────────────────────────────────────
 
-    // ── Storage abstraction (window.storage API with localStorage fallback) ──
-    async function storageGet() {
-      try {
-        if (window.storage && typeof window.storage.getItem === 'function') {
-          const raw = await window.storage.getItem(STORAGE_KEY);
-          return raw ? JSON.parse(raw) : [];
-        }
-      } catch (e) {}
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    }
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function storageSet(data) {
-      const serialized = JSON.stringify(data);
-      try {
-        if (window.storage && typeof window.storage.setItem === 'function') {
-          await window.storage.setItem(STORAGE_KEY, serialized);
-          return;
-        }
-      } catch (e) {}
-      localStorage.setItem(STORAGE_KEY, serialized);
-    }
-
-    // ── State ──
-    let entries = [];       // [{ id, word, partOfSpeech, definition, interval, nextReview, correct, incorrect }]
+    let entries = [];      // full word list, loaded from Supabase on init
     let currentMode = 'library';
-    let quizCard = null;    // current card being shown
+    let quizQueue = [];    // due words for the current quiz session
+    let quizIndex = 0;
     let quizRevealed = false;
 
-    // ── ID generator ──
-    function uid() {
-      return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    // ── Supabase helpers ─────────────────────────────────────────────────────
+
+    async function fetchAll() {
+      const { data, error } = await db.from('words').select('*');
+      if (error) throw error;
+      return data;
     }
 
-    // ── Spaced repetition helpers ──
-    const MIN_INTERVAL = 0.25;  // days (~6 hours) for wrong answers
-    const INITIAL_INTERVAL = 1; // days for new cards
-
-    function scheduleNext(entry, correct) {
-      const now = Date.now();
-      if (correct) {
-        const newInterval = Math.max(entry.interval * 2.5, entry.interval + 1);
-        entry.interval = newInterval;
-        entry.correct = (entry.correct || 0) + 1;
-      } else {
-        entry.interval = MIN_INTERVAL;
-        entry.incorrect = (entry.incorrect || 0) + 1;
-      }
-      entry.nextReview = now + entry.interval * 86400000;
+    async function insertWord(word, part_of_speech, definition) {
+      const { data, error } = await db
+        .from('words')
+        .insert({ word, part_of_speech, definition })
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
     }
 
-    function pickNextCard() {
-      if (entries.length === 0) return null;
-      const now = Date.now();
-      // Sort: overdue first (nextReview ascending), then fallback to soonest upcoming
-      const sorted = [...entries].sort((a, b) => (a.nextReview || 0) - (b.nextReview || 0));
-      return sorted[0];
+    async function updateDefinition(id, definition) {
+      const { error } = await db.from('words').update({ definition }).eq('id', id);
+      if (error) throw error;
     }
 
-    // ── Fetch definition ──
+    async function deleteWord(id) {
+      const { error } = await db.from('words').delete().eq('id', id);
+      if (error) throw error;
+    }
+
+    // Correct: quiz_score + 1, next_review = now + 2^(current score) days
+    async function markCorrect(id, currentScore) {
+      const daysUntilNext = Math.pow(2, currentScore);
+      const next_review = new Date(Date.now() + daysUntilNext * 86400000).toISOString();
+      const { error } = await db
+        .from('words')
+        .update({ quiz_score: currentScore + 1, next_review })
+        .eq('id', id);
+      if (error) throw error;
+    }
+
+    // Incorrect: reset quiz_score to 0, next_review = now + 1 hour
+    async function markIncorrect(id) {
+      const next_review = new Date(Date.now() + 3600000).toISOString();
+      const { error } = await db
+        .from('words')
+        .update({ quiz_score: 0, next_review })
+        .eq('id', id);
+      if (error) throw error;
+    }
+
+    // ── Free Dictionary API ──────────────────────────────────────────────────
+
     async function fetchDefinition(word) {
-      const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.trim().toLowerCase())}`);
+      const res = await fetch(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.trim().toLowerCase())}`
+      );
       if (!res.ok) throw new Error('Word not found');
       const data = await res.json();
       const meaning = data[0]?.meanings?.[0];
@@ -577,7 +586,8 @@
       };
     }
 
-    // ── Render library ──
+    // ── Render library ───────────────────────────────────────────────────────
+
     function renderLibrary() {
       const list = document.getElementById('word-list');
       const empty = document.getElementById('empty-msg');
@@ -597,14 +607,14 @@
         <li class="word-entry" data-id="${e.id}">
           <div class="entry-header">
             <span>
-              <span class="entry-word">${escHtml(e.word)}</span>${e.partOfSpeech ? `<span class="entry-pos">${escHtml(e.partOfSpeech)}</span>` : ''}
+              <span class="entry-word">${escHtml(e.word)}</span>${e.part_of_speech ? `<span class="entry-pos">${escHtml(e.part_of_speech)}</span>` : ''}
             </span>
             <span class="entry-actions">
               <button class="entry-btn edit-btn" data-id="${e.id}">Edit</button>
               <button class="entry-btn delete-btn" data-id="${e.id}">Delete</button>
             </span>
           </div>
-          <p class="entry-def" id="def-${e.id}">${escHtml(e.definition)}</p>
+          <p class="entry-def" id="def-${e.id}">${escHtml(e.definition || '')}</p>
         </li>
       `).join('');
 
@@ -624,14 +634,14 @@
       if (!defEl) return;
 
       const li = defEl.closest('.word-entry');
-      if (li.querySelector('.edit-area')) return; // already editing
+      if (li.querySelector('.edit-area')) return;
 
       defEl.style.display = 'none';
 
       const textarea = document.createElement('textarea');
       textarea.className = 'edit-area';
-      textarea.value = entry.definition;
-      textarea.rows = Math.max(2, Math.ceil(entry.definition.length / 70));
+      textarea.value = entry.definition || '';
+      textarea.rows = Math.max(2, Math.ceil((entry.definition || '').length / 70));
 
       const controls = document.createElement('div');
       controls.className = 'edit-controls';
@@ -650,10 +660,18 @@
       textarea.focus();
 
       saveBtn.addEventListener('click', async () => {
-        entry.definition = textarea.value.trim();
-        await storageSet(entries);
-        renderLibrary();
+        saveBtn.disabled = true;
+        const newDef = textarea.value.trim();
+        try {
+          await updateDefinition(id, newDef);
+          entry.definition = newDef;
+          renderLibrary();
+        } catch {
+          saveBtn.disabled = false;
+          setStatus('Error saving. Check your connection.');
+        }
       });
+
       cancelBtn.addEventListener('click', () => {
         textarea.remove();
         controls.remove();
@@ -662,28 +680,46 @@
     }
 
     async function deleteEntry(id) {
-      entries = entries.filter(e => e.id !== id);
-      await storageSet(entries);
-      renderLibrary();
+      try {
+        await deleteWord(id);
+        entries = entries.filter(e => e.id !== id);
+        renderLibrary();
+      } catch {
+        setStatus('Error deleting word. Check your connection.');
+      }
     }
 
-    // ── Render quiz ──
-    function renderQuiz() {
-      const card = pickNextCard();
-      quizCard = card;
-      quizRevealed = false;
+    // ── Quiz ─────────────────────────────────────────────────────────────────
 
+    function buildQuizQueue() {
+      const now = new Date().toISOString();
+      return [...entries]
+        .filter(e => !e.next_review || e.next_review <= now)
+        .sort((a, b) => (a.next_review || '').localeCompare(b.next_review || ''));
+    }
+
+    function renderQuiz() {
       const scene = document.getElementById('card-scene');
       const empty = document.getElementById('quiz-empty');
       const controls = document.getElementById('quiz-controls');
       const meta = document.getElementById('quiz-meta');
 
       scene.classList.remove('flipped');
+      quizRevealed = false;
+
+      const card = quizQueue[quizIndex] || null;
 
       if (!card) {
         scene.style.display = 'none';
         empty.style.display = '';
         controls.style.display = 'none';
+        if (entries.length === 0) {
+          document.getElementById('quiz-empty-primary').textContent = 'No words to review.';
+          document.getElementById('quiz-empty-secondary').textContent = 'Add some words in the Library.';
+        } else {
+          document.getElementById('quiz-empty-primary').textContent = 'All caught up.';
+          document.getElementById('quiz-empty-secondary').textContent = 'Check back later for your next review.';
+        }
         meta.textContent = '';
         return;
       }
@@ -693,13 +729,11 @@
       controls.style.display = '';
 
       document.getElementById('card-word').textContent = card.word;
-      document.getElementById('card-pos').textContent = card.partOfSpeech || '';
-      document.getElementById('card-def').textContent = card.definition;
+      document.getElementById('card-pos').textContent = card.part_of_speech || '';
+      document.getElementById('card-def').textContent = card.definition || '';
       document.getElementById('card-def-word').textContent = card.word;
 
-      const total = entries.length;
-      const due = entries.filter(e => (e.nextReview || 0) <= Date.now()).length;
-      meta.textContent = due > 0 ? `${due} of ${total} due` : `${total} word${total !== 1 ? 's' : ''}`;
+      meta.textContent = `${quizIndex + 1} of ${quizQueue.length} due`;
 
       showRevealControls();
     }
@@ -709,7 +743,6 @@
       controls.innerHTML = '';
       const revealBtn = document.createElement('button');
       revealBtn.className = 'quiz-btn reveal-btn';
-      revealBtn.id = 'reveal-btn';
       revealBtn.textContent = 'Reveal';
       revealBtn.addEventListener('click', revealCard);
       controls.appendChild(revealBtn);
@@ -737,26 +770,61 @@
     }
 
     async function markAnswer(correct) {
-      if (!quizCard) return;
-      const entry = entries.find(e => e.id === quizCard.id);
-      if (entry) {
-        scheduleNext(entry, correct);
-        await storageSet(entries);
+      const card = quizQueue[quizIndex];
+      if (!card) return;
+
+      document.getElementById('quiz-controls').querySelectorAll('button').forEach(b => b.disabled = true);
+
+      try {
+        const currentScore = card.quiz_score || 0;
+        if (correct) {
+          await markCorrect(card.id, currentScore);
+          const entry = entries.find(e => e.id === card.id);
+          if (entry) {
+            entry.quiz_score = currentScore + 1;
+            entry.next_review = new Date(
+              Date.now() + Math.pow(2, currentScore) * 86400000
+            ).toISOString();
+          }
+        } else {
+          await markIncorrect(card.id);
+          const entry = entries.find(e => e.id === card.id);
+          if (entry) {
+            entry.quiz_score = 0;
+            entry.next_review = new Date(Date.now() + 3600000).toISOString();
+          }
+        }
+      } catch {
+        // proceed to next card even if the DB write fails
       }
+
+      quizIndex++;
       renderQuiz();
     }
 
-    // ── Mode switching ──
+    // ── Mode switching ───────────────────────────────────────────────────────
+
     function setMode(mode) {
       currentMode = mode;
       document.getElementById('view-library').style.display = mode === 'library' ? '' : 'none';
-      document.getElementById('view-quiz').style.display = mode === 'quiz' ? '' : 'none';
+      document.getElementById('view-quiz').style.display   = mode === 'quiz'    ? '' : 'none';
       document.getElementById('btn-library').classList.toggle('active', mode === 'library');
       document.getElementById('btn-quiz').classList.toggle('active', mode === 'quiz');
-      if (mode === 'quiz') renderQuiz();
+      if (mode === 'quiz') {
+        quizQueue = buildQuizQueue();
+        quizIndex = 0;
+        renderQuiz();
+      }
     }
 
-    // ── Add form ──
+    // ── Status helper ────────────────────────────────────────────────────────
+
+    function setStatus(msg) {
+      document.getElementById('status').textContent = msg;
+    }
+
+    // ── Add form ─────────────────────────────────────────────────────────────
+
     document.getElementById('add-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const input = document.getElementById('word-input');
@@ -764,70 +832,56 @@
       if (!word) return;
 
       const btn = document.getElementById('add-btn');
-      const status = document.getElementById('status');
 
-      // Prevent duplicate
       if (entries.some(en => en.word.toLowerCase() === word.toLowerCase())) {
-        status.textContent = `"${word}" is already in your lexicon.`;
+        setStatus(`"${word}" is already in your lexicon.`);
         return;
       }
 
       btn.disabled = true;
-      status.textContent = `Fetching definition…`;
+      setStatus('Fetching definition…');
+
+      let definition = '';
+      let partOfSpeech = '';
 
       try {
-        const { definition, partOfSpeech } = await fetchDefinition(word);
-        const now = Date.now();
-        const entry = {
-          id: uid(),
-          word: word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-          partOfSpeech,
-          definition,
-          interval: INITIAL_INTERVAL,
-          nextReview: now,
-          correct: 0,
-          incorrect: 0,
-        };
-        entries.push(entry);
-        await storageSet(entries);
-        input.value = '';
-        status.textContent = '';
-        renderLibrary();
-      } catch (err) {
-        status.textContent = `Could not find a definition for "${word}". You can add it manually.`;
-        // Add with blank definition so the user can fill it in
-        const now = Date.now();
-        const entry = {
-          id: uid(),
-          word: word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-          partOfSpeech: '',
-          definition: '',
-          interval: INITIAL_INTERVAL,
-          nextReview: now,
-          correct: 0,
-          incorrect: 0,
-        };
-        entries.push(entry);
-        await storageSet(entries);
+        const result = await fetchDefinition(word);
+        definition   = result.definition;
+        partOfSpeech = result.partOfSpeech;
+        setStatus('');
+      } catch {
+        setStatus(`Could not find a definition for "${word}". You can add it manually.`);
+      }
+
+      const capitalized = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+
+      try {
+        const newEntry = await insertWord(capitalized, partOfSpeech, definition);
+        entries.push(newEntry);
         input.value = '';
         renderLibrary();
+      } catch {
+        setStatus('Error saving word. Check your connection.');
       } finally {
         btn.disabled = false;
       }
     });
 
-    // ── Card tap to reveal ──
+    // ── Card tap to reveal ───────────────────────────────────────────────────
+
     document.getElementById('card-scene').addEventListener('click', () => {
       if (!quizRevealed) revealCard();
     });
 
-    // ── Mode buttons ──
+    // ── Mode buttons ─────────────────────────────────────────────────────────
+
     document.getElementById('btn-library').addEventListener('click', () => setMode('library'));
     document.getElementById('btn-quiz').addEventListener('click', () => setMode('quiz'));
 
-    // ── Keyboard shortcuts ──
+    // ── Keyboard shortcuts ───────────────────────────────────────────────────
+
     document.addEventListener('keydown', (e) => {
-      if (currentMode !== 'quiz' || !quizCard) return;
+      if (currentMode !== 'quiz' || !quizQueue[quizIndex]) return;
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
       if (e.key === ' ' || e.key === 'Enter') {
@@ -835,11 +889,12 @@
         if (!quizRevealed) revealCard();
       } else if (quizRevealed) {
         if (e.key === 'ArrowRight' || e.key === '1') markAnswer(true);
-        if (e.key === 'ArrowLeft' || e.key === '2') markAnswer(false);
+        if (e.key === 'ArrowLeft'  || e.key === '2') markAnswer(false);
       }
     });
 
-    // ── Escape HTML ──
+    // ── Escape HTML ──────────────────────────────────────────────────────────
+
     function escHtml(str) {
       return String(str)
         .replace(/&/g, '&amp;')
@@ -848,11 +903,19 @@
         .replace(/"/g, '&quot;');
     }
 
-    // ── Init ──
+    // ── Init ─────────────────────────────────────────────────────────────────
+
     (async () => {
-      entries = await storageGet();
+      setStatus('Loading…');
+      try {
+        entries = await fetchAll();
+        setStatus('');
+      } catch {
+        setStatus('Could not connect to database. Check your Supabase config.');
+      }
       renderLibrary();
     })();
+
   })();
   </script>
 
