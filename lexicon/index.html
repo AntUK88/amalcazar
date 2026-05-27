@@ -617,8 +617,8 @@
           const result = await fetchDefinition(entry.word);
           if (result.phonetic) {
             entry.phonetic = result.phonetic;
-            await updatePhonetic(entry.id, result.phonetic);
             renderLibrary();
+            updatePhonetic(entry.id, result.phonetic).catch(() => {});
           }
         } catch {
           // word not found in dictionary — skip silently
