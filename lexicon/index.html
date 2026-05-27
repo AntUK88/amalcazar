@@ -625,10 +625,24 @@
       const tmp = document.createElement('div');
       tmp.innerHTML = entry.definitions?.[0]?.definition || '';
 
+      // Fetch IPA from the rendered page (section 0 = top of article, smallest payload)
+      let phonetic = '';
+      try {
+        const parseRes = await fetch(
+          `https://en.wiktionary.org/w/api.php?action=parse&page=${encoded}&prop=text&section=0&format=json&origin=*`
+        );
+        if (parseRes.ok) {
+          const parseData = await parseRes.json();
+          const html = parseData.parse?.text?.['*'] || '';
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          phonetic = doc.querySelector('.IPA')?.textContent?.trim() || '';
+        }
+      } catch {}
+
       return {
         definition:   tmp.textContent.trim(),
         partOfSpeech: (entry.partOfSpeech || '').toLowerCase(),
-        phonetic:     '',
+        phonetic,
       };
     }
 
