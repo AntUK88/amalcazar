@@ -565,6 +565,11 @@
       if (error) throw error;
     }
 
+    async function updatePartOfSpeech(id, part_of_speech) {
+      const { error } = await db.from('words').update({ part_of_speech }).eq('id', id);
+      if (error) throw error;
+    }
+
     async function deleteWord(id) {
       const { error } = await db.from('words').delete().eq('id', id);
       if (error) throw error;
@@ -625,11 +630,11 @@
       const tmp = document.createElement('div');
       tmp.innerHTML = entry.definitions?.[0]?.definition || '';
 
-      // Fetch IPA from the rendered page (section 0 = top of article, smallest payload)
+      // Fetch IPA from the full rendered page (IPA lives in the Pronunciation section)
       let phonetic = '';
       try {
         const parseRes = await fetch(
-          `https://en.wiktionary.org/w/api.php?action=parse&page=${encoded}&prop=text&section=0&format=json&origin=*`
+          `https://en.wiktionary.org/w/api.php?action=parse&page=${encoded}&prop=text&format=json&origin=*`
         );
         if (parseRes.ok) {
           const parseData = await parseRes.json();
@@ -646,18 +651,25 @@
       };
     }
 
-    // ── Backfill missing phonetics ───────────────────────────────────────────
+    // ── Backfill missing phonetics and part-of-speech ───────────────────────
 
     async function backfillPhonetics() {
-      const missing = entries.filter(e => !e.phonetic);
+      const missing = entries.filter(e => !e.phonetic || !e.part_of_speech);
       for (const entry of missing) {
         try {
           const result = await fetchDefinition(entry.word);
-          if (result.phonetic) {
+          let changed = false;
+          if (result.phonetic && !entry.phonetic) {
             entry.phonetic = result.phonetic;
-            renderLibrary();
             updatePhonetic(entry.id, result.phonetic).catch(() => {});
+            changed = true;
           }
+          if (result.partOfSpeech && !entry.part_of_speech) {
+            entry.part_of_speech = result.partOfSpeech;
+            updatePartOfSpeech(entry.id, result.partOfSpeech).catch(() => {});
+            changed = true;
+          }
+          if (changed) renderLibrary();
         } catch {
           // word not found in dictionary — skip silently
         }
