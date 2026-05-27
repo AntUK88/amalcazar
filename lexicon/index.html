@@ -238,6 +238,13 @@
     .entry-btn:hover { color: var(--ink); }
     .entry-btn.delete-btn:hover { color: #8b2020; }
 
+    .entry-phonetic {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+      font-style: italic;
+    }
+
     .entry-def {
       font-size: 1rem;
       line-height: 1.65;
@@ -332,7 +339,14 @@
       font-size: 1.8rem;
       font-weight: 400;
       letter-spacing: -0.01em;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .card-phonetic {
+      font-size: 1rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 0.35rem;
     }
 
     .card-pos {
@@ -478,6 +492,7 @@
           <div class="card-inner">
             <div class="card-face card-front">
               <span class="card-word" id="card-word"></span>
+              <span class="card-phonetic" id="card-phonetic"></span>
               <span class="card-pos" id="card-pos"></span>
               <span class="card-hint">tap to reveal</span>
             </div>
@@ -530,10 +545,10 @@
       return data;
     }
 
-    async function insertWord(word, part_of_speech, definition) {
+    async function insertWord(word, part_of_speech, definition, phonetic) {
       const { data, error } = await db
         .from('words')
-        .insert({ word, part_of_speech, definition })
+        .insert({ word, part_of_speech, definition, phonetic })
         .select()
         .single();
       if (error) throw error;
@@ -580,9 +595,11 @@
       if (!res.ok) throw new Error('Word not found');
       const data = await res.json();
       const meaning = data[0]?.meanings?.[0];
+      const phonetic = data[0]?.phonetic || data[0]?.phonetics?.find(p => p.text)?.text || '';
       return {
         definition: meaning?.definitions?.[0]?.definition || '',
         partOfSpeech: meaning?.partOfSpeech || '',
+        phonetic,
       };
     }
 
@@ -614,6 +631,7 @@
               <button class="entry-btn delete-btn" data-id="${e.id}">Delete</button>
             </span>
           </div>
+          ${e.phonetic ? `<p class="entry-phonetic">${escHtml(e.phonetic)}</p>` : ''}
           <p class="entry-def" id="def-${e.id}">${escHtml(e.definition || '')}</p>
         </li>
       `).join('');
@@ -729,6 +747,7 @@
       controls.style.display = '';
 
       document.getElementById('card-word').textContent = card.word;
+      document.getElementById('card-phonetic').textContent = card.phonetic || '';
       document.getElementById('card-pos').textContent = card.part_of_speech || '';
       document.getElementById('card-def').textContent = card.definition || '';
       document.getElementById('card-def-word').textContent = card.word;
@@ -843,11 +862,13 @@
 
       let definition = '';
       let partOfSpeech = '';
+      let phonetic = '';
 
       try {
         const result = await fetchDefinition(word);
         definition   = result.definition;
         partOfSpeech = result.partOfSpeech;
+        phonetic     = result.phonetic;
         setStatus('');
       } catch {
         setStatus(`Could not find a definition for "${word}". You can add it manually.`);
@@ -856,7 +877,7 @@
       const capitalized = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 
       try {
-        const newEntry = await insertWord(capitalized, partOfSpeech, definition);
+        const newEntry = await insertWord(capitalized, partOfSpeech, definition, phonetic);
         entries.push(newEntry);
         input.value = '';
         renderLibrary();
