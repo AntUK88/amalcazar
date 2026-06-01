@@ -1,0 +1,39 @@
+/* Dark theme variable overrides */
+[data-theme="dark"] {
+  --cream: #1a1714;
+  --bg: #1a1714;
+  --ink: #faf7f1;
+  --secondary: #d8d1c3;
+  --muted: #b3ab9d;
+  --accent: #8f2d28;
+  --kicker: #b0463f;
+  --rule: #2e2a24;
+  --blockquote-bg: #221e1a;
+  --green: #4a9c4a;
+  --green-bg: #1a2e1a;
+  --red: #c05050;
+  --red-bg: #2e1a1a;
+}
+
+[data-theme="dark"] .nav-dropdown { background: #1a1714; }
+
+/* Toggle button */
+#theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+#theme-toggle:hover { color: var(--ink); }
+
+/* CSS-driven icon swap — no JS flash */
+#theme-toggle .icon-sun  { display: none; }
+#theme-toggle .icon-moon { display: block; }
+[data-theme="dark"] #theme-toggle .icon-sun  { display: block; }
+[data-theme="dark"] #theme-toggle .icon-moon { display: none; }
