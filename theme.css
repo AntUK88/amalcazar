@@ -1,5 +1,7 @@
-/* Dark theme variable overrides */
-[data-theme="dark"] {
+/* Dark theme variable overrides
+   html[data-theme="dark"] has specificity 0,1,1 which beats :root (0,1,0)
+   so these variables correctly override the inline <style> light-theme values */
+html[data-theme="dark"] {
   --cream: #1a1714;
   --bg: #1a1714;
   --ink: #faf7f1;
@@ -15,7 +17,7 @@
   --red-bg: #2e1a1a;
 }
 
-[data-theme="dark"] .nav-dropdown { background: #1a1714; }
+html[data-theme="dark"] .nav-dropdown { background: #1a1714; }
 
 /* Toggle button */
 #theme-toggle {
@@ -35,5 +37,5 @@
 /* CSS-driven icon swap — no JS flash */
 #theme-toggle .icon-sun  { display: none; }
 #theme-toggle .icon-moon { display: block; }
-[data-theme="dark"] #theme-toggle .icon-sun  { display: block; }
-[data-theme="dark"] #theme-toggle .icon-moon { display: none; }
+html[data-theme="dark"] #theme-toggle .icon-sun  { display: block; }
+html[data-theme="dark"] #theme-toggle .icon-moon { display: none; }
