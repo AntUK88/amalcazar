@@ -19,6 +19,18 @@ html[data-theme="dark"] {
 
 html[data-theme="dark"] .nav-dropdown { background: #1a1714; }
 
+/* Wire terracotta accent to heading-type elements in dark mode.
+   --kicker (#b0463f) goes on small uppercase section labels and kickers.
+   --accent (#8f2d28) is available for decorative use (borders, marks, etc.).
+   Main display headings keep --ink so they stay fully legible. */
+html[data-theme="dark"] .cv-section-title  { color: var(--kicker); }
+html[data-theme="dark"] .cv-skill-label    { color: var(--kicker); }
+html[data-theme="dark"] .page-subtitle     { color: var(--kicker); }
+html[data-theme="dark"] .course-label      { color: var(--kicker); }
+html[data-theme="dark"] .quiz-meta         { color: var(--kicker); }
+html[data-theme="dark"] .back-link         { color: var(--kicker); }
+html[data-theme="dark"] .back-link:hover   { color: var(--ink); }
+
 /* Ensure nav items are always vertically centred */
 nav { align-items: center; }
 
